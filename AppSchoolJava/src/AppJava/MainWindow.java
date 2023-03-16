@@ -19,7 +19,9 @@ public class MainWindow extends JFrame {
 			public void run() {
 				try {
 					MainWindow frame = new MainWindow();
+					HomeWindow homeWindow = new HomeWindow();
 					frame.setVisible(true);
+					homeWindow.setVisible(true);
 				} catch (Exception e) {
 					e.printStackTrace();
 				}
