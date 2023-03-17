@@ -1,6 +1,7 @@
 package AppJava;
 
 import java.awt.EventQueue;
+import java.sql.SQLException;
 
 import javax.swing.JFrame;
 import javax.swing.JPanel;
@@ -10,7 +11,7 @@ import javax.swing.border.EmptyBorder;
 public class MainWindow extends JFrame {
 
 	private JPanel contentPane;
-
+	DbConn conn = new DbConn();
 	/**
 	 * Launch the application.
 	 */
@@ -21,7 +22,7 @@ public class MainWindow extends JFrame {
 					MainWindow frame = new MainWindow();
 					HomeWindow homeWindow = new HomeWindow();
 					frame.setVisible(true);
-					homeWindow.setVisible(true);
+					//homeWindow.setVisible(true);
 				} catch (Exception e) {
 					e.printStackTrace();
 				}
@@ -31,14 +32,17 @@ public class MainWindow extends JFrame {
 
 	/**
 	 * Create the frame.
+	 * @throws SQLException 
+	 * @throws ClassNotFoundException 
 	 */
-	public MainWindow() {
+	public MainWindow() throws ClassNotFoundException, SQLException {
 		setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
 		setBounds(100, 100, 450, 300);
 		contentPane = new JPanel();
 		contentPane.setBorder(new EmptyBorder(5, 5, 5, 5));
 
 		setContentPane(contentPane);
+		conn.Connect();
 	}
 
 }
