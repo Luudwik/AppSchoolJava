@@ -10,7 +10,7 @@ import javax.swing.border.EmptyBorder;
 @SuppressWarnings("serial")
 public class MainWindow extends JFrame {
 
-	private JPanel contentPane;
+	JPanel contentPane;
 	DbConn conn = new DbConn();
 	/**
 	 * Launch the application.
@@ -19,10 +19,12 @@ public class MainWindow extends JFrame {
 		EventQueue.invokeLater(new Runnable() {
 			public void run() {
 				try {
-					MainWindow frame = new MainWindow();
-					HomeWindow homeWindow = new HomeWindow();
-					frame.setVisible(true);
-					//homeWindow.setVisible(true);
+					//MainWindow frame = new MainWindow();
+					//frame.setVisible(true);
+					LoginUI loginUI = new LoginUI();
+					loginUI.Frame_log.setVisible(true);
+					
+					
 				} catch (Exception e) {
 					e.printStackTrace();
 				}

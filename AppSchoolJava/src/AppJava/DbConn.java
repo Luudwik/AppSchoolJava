@@ -19,7 +19,7 @@ public class DbConn {
 			Class.forName("com.mysql.cj.jdbc.Driver");
 			con = DriverManager.getConnection("jdbc:mysql://student.cs.uni.opole.pl/130594","130594@student.cs.uni.opole.pl", "130594");
 			
-			pst = con.prepareStatement("SELECT przerzutki FROM osprzet");
+			pst = con.prepareStatement("SELECT id FROM Teachers");
 			rs = pst.executeQuery();
 			String test = "";
 			while (rs.next()) 
