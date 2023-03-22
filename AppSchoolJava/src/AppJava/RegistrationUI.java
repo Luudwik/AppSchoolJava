@@ -62,7 +62,7 @@ public class RegistrationUI {
 	 */
 	private void initialize() {
 		Frame_rej = new JFrame();
-		Frame_rej.setBounds(110, 160, 600, 650);
+		Frame_rej.setBounds(400, 100, 600, 650);
 		Frame_rej.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
 		Frame_rej.getContentPane().setSize(60, 60);
 		Frame_rej.getContentPane().setBackground(new Color(224, 255, 255));

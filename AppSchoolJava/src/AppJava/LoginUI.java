@@ -191,7 +191,7 @@ public class LoginUI {
 		lb_pass.setFont(new Font("Tahoma", Font.BOLD, 30));
 		lb_pass.setBounds(25, 342, 130, 82);
 		Frame_log.getContentPane().add(lb_pass);
-		Frame_log.setBounds(250, 250, 600, 600);
+		Frame_log.setBounds(400, 100, 600, 600);
 		Frame_log.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
 	}
 }
