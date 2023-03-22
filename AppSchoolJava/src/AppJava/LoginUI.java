@@ -150,17 +150,17 @@ public class LoginUI {
 		btn_logIn.setBounds(10, 492, 280, 58);
 		Frame_log.getContentPane().add(btn_logIn);
 		
-		JButton btnRej = new JButton("Zarejestruj się");
-		btnRej.addActionListener(new ActionListener() {
+		JButton btn_rej = new JButton("Zarejestruj się");
+		btn_rej.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
-				RegistrationUI registrationUI = new RegistrationUI();
 				Frame_log.dispose();
+				RegistrationUI registrationUI = new RegistrationUI();				
 				registrationUI.Frame_rej.setVisible(true);
 			}
 		});
-		btnRej.setFont(new Font("Tahoma", Font.PLAIN, 30));
-		btnRej.setBounds(294, 492, 280, 58);
-		Frame_log.getContentPane().add(btnRej);
+		btn_rej.setFont(new Font("Tahoma", Font.PLAIN, 30));
+		btn_rej.setBounds(294, 492, 280, 58);
+		Frame_log.getContentPane().add(btn_rej);
 		
 		JPanel panel_2 = new JPanel();
 		panel_2.setBounds(0, 0, 584, 138);
@@ -180,17 +180,17 @@ public class LoginUI {
 		lbLoginPanel.setBounds(10, 11, 378, 116);
 		panel_2.add(lbLoginPanel);
 		
-		JLabel lblNewLabel_1 = new JLabel("Login:");
-		lblNewLabel_1.setFont(new Font("Tahoma", Font.BOLD, 30));
-		lblNewLabel_1.setHorizontalAlignment(SwingConstants.CENTER);
-		lblNewLabel_1.setBounds(25, 197, 130, 82);
-		Frame_log.getContentPane().add(lblNewLabel_1);
+		JLabel lb_login = new JLabel("Login:");
+		lb_login.setFont(new Font("Tahoma", Font.BOLD, 30));
+		lb_login.setHorizontalAlignment(SwingConstants.CENTER);
+		lb_login.setBounds(25, 197, 130, 82);
+		Frame_log.getContentPane().add(lb_login);
 		
-		JLabel lblNewLabel_2 = new JLabel("Hasło:");
-		lblNewLabel_2.setHorizontalAlignment(SwingConstants.CENTER);
-		lblNewLabel_2.setFont(new Font("Tahoma", Font.BOLD, 30));
-		lblNewLabel_2.setBounds(25, 342, 130, 82);
-		Frame_log.getContentPane().add(lblNewLabel_2);
+		JLabel lb_pass = new JLabel("Hasło:");
+		lb_pass.setHorizontalAlignment(SwingConstants.CENTER);
+		lb_pass.setFont(new Font("Tahoma", Font.BOLD, 30));
+		lb_pass.setBounds(25, 342, 130, 82);
+		Frame_log.getContentPane().add(lb_pass);
 		Frame_log.setBounds(250, 250, 600, 600);
 		Frame_log.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
 	}

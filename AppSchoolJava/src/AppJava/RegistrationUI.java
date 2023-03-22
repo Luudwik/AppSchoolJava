@@ -139,8 +139,8 @@ public class RegistrationUI {
 		tx_password.setBounds(220, 435, 290, 60);
 		Frame_rej.getContentPane().add(tx_password);
 		
-		JButton btnNewButton = new JButton("Zarejestruj!");
-		btnNewButton.addActionListener(new ActionListener() {
+		JButton btn_register = new JButton("Zarejestruj!");
+		btn_register.addActionListener(new ActionListener() {
 			@SuppressWarnings("deprecation")
 			public void actionPerformed(ActionEvent e) {
 				String login = tx_login.getText();				
@@ -197,9 +197,20 @@ public class RegistrationUI {
 				
 			}
 		});
-		btnNewButton.setFont(new Font("Tahoma", Font.PLAIN, 30));
-		btnNewButton.setBounds(107, 527, 360, 73);
-		Frame_rej.getContentPane().add(btnNewButton);
+		btn_register.setFont(new Font("Tahoma", Font.PLAIN, 30));
+		btn_register.setBounds(10, 527, 360, 73);
+		Frame_rej.getContentPane().add(btn_register);
+		
+		JButton btn_back = new JButton("Wstecz");
+		btn_back.addActionListener(new ActionListener() {
+			public void actionPerformed(ActionEvent e) {
+				Frame_rej.dispose();
+				LoginUI loginUI = new LoginUI();
+				loginUI.Frame_log.setVisible(true);
+			}
+		});
+		btn_back.setFont(new Font("Tahoma", Font.PLAIN, 30));
+		btn_back.setBounds(380, 527, 194, 73);
+		Frame_rej.getContentPane().add(btn_back);
 	}
-
 }
