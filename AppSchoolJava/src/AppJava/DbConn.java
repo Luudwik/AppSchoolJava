@@ -21,8 +21,8 @@ public class DbConn {
 		{
 			Class.forName("com.mysql.cj.jdbc.Driver");
 			con = DriverManager.getConnection(dataBase,user,password);
-			/*
-			pst = con.prepareStatement("SELECT id FROM Teachers");
+			
+			/*pst = con.prepareStatement("SELECT id FROM Teachers");
 			rs = pst.executeQuery();
 			String test = "";
 			while (rs.next()) 

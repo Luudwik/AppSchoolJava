@@ -7,7 +7,6 @@ import java.awt.Image;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.sql.Connection;
-import java.sql.DriverManager;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
@@ -191,7 +190,9 @@ public class LoginUI {
 		lb_pass.setFont(new Font("Tahoma", Font.BOLD, 30));
 		lb_pass.setBounds(25, 342, 130, 82);
 		Frame_log.getContentPane().add(lb_pass);
-		Frame_log.setBounds(400, 100, 600, 600);
+		//Frame_log.setBounds(400, 100, 600, 600);
+		Frame_log.setSize(600, 600);
+		Frame_log.setLocationRelativeTo(null);
 		Frame_log.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
 	}
 }

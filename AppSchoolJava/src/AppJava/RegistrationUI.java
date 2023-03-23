@@ -20,7 +20,6 @@ import javax.swing.JButton;
 import java.awt.event.ActionListener;
 import java.awt.event.FocusAdapter;
 import java.sql.Connection;
-import java.sql.DriverManager;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
@@ -63,7 +62,9 @@ public class RegistrationUI {
 	 */
 	private void initialize() {
 		Frame_rej = new JFrame();
-		Frame_rej.setBounds(400, 100, 600, 650);
+		//Frame_rej.setBounds(400, 100, 600, 650);
+		Frame_rej.setSize(600, 650);
+		Frame_rej.setLocationRelativeTo(null);
 		Frame_rej.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
 		Frame_rej.getContentPane().setSize(60, 60);
 		Frame_rej.getContentPane().setBackground(new Color(224, 255, 255));
