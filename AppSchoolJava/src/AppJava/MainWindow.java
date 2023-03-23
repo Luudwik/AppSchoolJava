@@ -11,7 +11,6 @@ import javax.swing.border.EmptyBorder;
 public class MainWindow extends JFrame {
 
 	JPanel contentPane;
-	DbConn conn = new DbConn();
 	/**
 	 * Launch the application.
 	 */
@@ -44,7 +43,5 @@ public class MainWindow extends JFrame {
 		contentPane.setBorder(new EmptyBorder(5, 5, 5, 5));
 
 		setContentPane(contentPane);
-		conn.Connect();
 	}
-
 }

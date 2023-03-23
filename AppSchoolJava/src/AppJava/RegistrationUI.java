@@ -33,6 +33,7 @@ public class RegistrationUI {
 	 private JTextField tx_surname;
 	 private JTextField tx_login;
 	 private JPasswordField tx_password;
+	 DbConn dbConn = new DbConn();
 
 	/**
 	 * Launch the application.
@@ -147,8 +148,7 @@ public class RegistrationUI {
 				String password = tx_password.getText();
 				try
 				{					
-					Class.forName("com.mysql.cj.jdbc.Driver");
-					Connection con = DriverManager.getConnection("jdbc:mysql://student.cs.uni.opole.pl/130594","130594@student.cs.uni.opole.pl", "130594");
+					Connection con = dbConn.Connect();
 					
 					//Checking if such a login already exists
 					PreparedStatement pst = con.prepareStatement("SELECT login FROM Teachers WHERE BINARY login = ?");

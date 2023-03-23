@@ -11,14 +11,17 @@ public class DbConn {
 	Connection con;
 	PreparedStatement pst;
 	ResultSet rs;
+	String dataBase = "jdbc:mysql://student.cs.uni.opole.pl/130594";
+	String user = "130594@student.cs.uni.opole.pl";
+	String password = "130594";
 
-	public void Connect() throws ClassNotFoundException, SQLException 
+	public Connection Connect() throws ClassNotFoundException, SQLException 
 	{
 		try
 		{
 			Class.forName("com.mysql.cj.jdbc.Driver");
-			con = DriverManager.getConnection("jdbc:mysql://student.cs.uni.opole.pl/130594","130594@student.cs.uni.opole.pl", "130594");
-			
+			con = DriverManager.getConnection(dataBase,user,password);
+			/*
 			pst = con.prepareStatement("SELECT id FROM Teachers");
 			rs = pst.executeQuery();
 			String test = "";
@@ -26,11 +29,12 @@ public class DbConn {
 			{
 				test += rs.getString(1) + "\n";
 			}
-			System.out.println(test);
+			System.out.println(test);*/
 		}
 		catch (SQLException e) 
 		{
 			System.out.println(e);
 		}
+		return con;
 	}
 }
