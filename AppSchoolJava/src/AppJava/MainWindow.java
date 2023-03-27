@@ -13,8 +13,7 @@ import javax.swing.border.EmptyBorder;
 @SuppressWarnings("serial")
 public class MainWindow extends JFrame {
 
-	private JPanel contentPane;
-	DbConn conn = new DbConn();
+	JPanel contentPane;
 	/**
 	 * Launch the application.
 	 */
@@ -22,9 +21,12 @@ public class MainWindow extends JFrame {
 		EventQueue.invokeLater(new Runnable() {
 			public void run() {
 				try {
-					MainWindow frame = new MainWindow();
-					frame.setVisible(true);
-					//homeWindow.setVisible(true);
+					//MainWindow frame = new MainWindow();
+					//frame.setVisible(true);
+					LoginUI loginUI = new LoginUI();
+					loginUI.Frame_log.setVisible(true);
+					
+					
 				} catch (Exception e) {
 					e.printStackTrace();
 				}
@@ -47,28 +49,5 @@ public class MainWindow extends JFrame {
 		contentPane.setBorder(new EmptyBorder(5, 5, 5, 5));
 
 		setContentPane(contentPane);
-		conn.Connect();
-		
-		JButton btnEditStudents = new JButton("Edycja Uczniow");
-		btnEditStudents.addActionListener(new ActionListener() {
-			public void actionPerformed(ActionEvent e)
-			{
-				
-				EditStudentsWindow editStudentWindow;
-				try {
-					dispose();
-					editStudentWindow = new EditStudentsWindow();
-					editStudentWindow.setVisible(true);
-				} catch (SQLException e1) {
-					// TODO Auto-generated catch block
-					e1.printStackTrace();
-				}
-				
-
-			}
-		});
-		
-		contentPane.add(btnEditStudents);
 	}
-
 }
