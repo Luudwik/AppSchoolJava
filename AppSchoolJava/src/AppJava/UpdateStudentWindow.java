@@ -46,7 +46,8 @@ public class UpdateStudentWindow extends JFrame {
 	 */
 	public UpdateStudentWindow() throws SQLException {
 		setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
-		setBounds(600, 100, 400, 600);
+		setSize(400, 600);
+		setLocationRelativeTo(null);
 		contentPane = new JPanel();
 		contentPane.setBorder(new EmptyBorder(5, 5, 5, 5));
 		setContentPane(contentPane);
@@ -126,8 +127,13 @@ public class UpdateStudentWindow extends JFrame {
 					else if(textFieldPhone.getText().matches("[0-9]+") && textFieldName.getText().matches("[a-zA-Z]+")
 							 && textFieldSurname.getText().matches("[a-zA-Z]+") && textFieldClass.getText().matches("[a-zA-Z0-9]+"))
 					{
+						String name = textFieldName.getText();
+						name = name.substring(0,1).toUpperCase() + name.substring(1).toLowerCase();
+						String surname = textFieldSurname.getText().toLowerCase();
+						surname = surname.substring(0,1).toUpperCase() + surname.substring(1).toLowerCase();
+						
 						dbConn.Connect();
-						dbConn.pst = dbConn.con.prepareStatement("UPDATE `Students` SET `name` = '"+textFieldName.getText()+"', `surname` = '"+textFieldSurname.getText()+"', `phone` = '"+textFieldPhone.getText()+"', `class` = '"+textFieldClass.getText()+"' WHERE `Students`.`id` = "+sqlId);
+						dbConn.pst = dbConn.con.prepareStatement("UPDATE `Students` SET `name` = '"+name+"', `surname` = '"+surname+"', `phone` = '"+textFieldPhone.getText()+"', `class` = '"+textFieldClass.getText()+"' WHERE `Students`.`id` = "+sqlId);
 						//dbConn.pst = dbConn.con.prepareStatement("INSERT INTO `Students` (`id`, `name`, `surname`, `phone`, `class`) VALUES (NULL, '"+textFieldName.getText()+"', '"+textFieldSurname.getText()+"', '"+textFieldPhone.getText()+"', '"+textFieldClass.getText()+"')");
 						dbConn.pst.execute();
 						dispose();

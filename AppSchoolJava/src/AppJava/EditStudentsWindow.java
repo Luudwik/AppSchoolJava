@@ -17,6 +17,8 @@ import javax.swing.JTable;
 import javax.swing.SwingConstants;
 import javax.swing.JButton;
 import java.awt.Font;
+import java.awt.GraphicsDevice;
+import java.awt.GraphicsEnvironment;
 import java.awt.event.ActionListener;
 import java.awt.event.ActionEvent;
 
@@ -80,12 +82,15 @@ public class EditStudentsWindow extends JFrame {
 	 */
 	public EditStudentsWindow() throws SQLException {
 		setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
-		setBounds(100, 100, 1200, 700);
+		setResizable(false);
+		setSize(1200,700);
+		setLocationRelativeTo(null);
 		contentPane = new JPanel();
-		contentPane.setBackground(Color.CYAN);
+		contentPane.setBackground(Color.YELLOW);
 		contentPane.setBorder(new EmptyBorder(5, 0, 5, 0));
 		contentPane.setLayout(null);
 		setContentPane(contentPane);
+		
 		
 		tableModel = new DefaultTableModel();
 		tableModel.addColumn("id");
@@ -96,7 +101,7 @@ public class EditStudentsWindow extends JFrame {
 		
 		ReadDataFromDatabase();
 		
-		scrollPane.setBounds(0, 50, 1186, 613);
+		scrollPane.setBounds(0, 50, 1186, 563);
 		contentPane.add(scrollPane);
 		table.setBounds(100, 100, 1200, 500);
 		table.setFont(new Font("SansSerif", Font.BOLD, 10));
@@ -118,26 +123,38 @@ public class EditStudentsWindow extends JFrame {
 		JButton btnDelete = new JButton("Delete");
 		btnDelete.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
+				System.out.println(table.getSelectedRow());
 				if(table.getSelectedRow() == -1) {
-					JOptionPane.showMessageDialog(btnDelete, "Żaden rekord do usunięcia nie jest zaznaczony");
+					JOptionPane.showMessageDialog(null, "Żaden rekord do usunięcia nie jest zaznaczony");
 				}
 				else {
 					
 					String sqlID = tableModel.getValueAt(table.getSelectedRow(), 0).toString();
 					
 						try {
+							System.out.println(table.getSelectedRow());
 							DbConn dbConn = new DbConn();
 							dbConn.Connect();
 							dbConn.pst = dbConn.con.prepareStatement("DELETE FROM `Students` WHERE `Students`.`id` = "+sqlID);
 							dbConn.pst.execute();
+							//ReadDataFromDatabase();
+							//table.clearSelection();
 							
 						} catch (Exception e1) {
 							// TODO Auto-generated catch block
 							e1.printStackTrace();
 						}
-					ReadDataFromDatabase();
+					
 				}
-				
+				dispose();
+				EditStudentsWindow editStudentsWindow;
+				try {
+					editStudentsWindow = new EditStudentsWindow();
+					editStudentsWindow.setVisible(true);
+				} catch (SQLException e1) {
+					// TODO Auto-generated catch block
+					e1.printStackTrace();
+				}
 				
 			}
 		});
@@ -150,7 +167,7 @@ public class EditStudentsWindow extends JFrame {
 		btnUpdate.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
 				if(table.getSelectedRow() == -1) {
-					JOptionPane.showMessageDialog(btnUpdate, "Żaden rekord do edytowania nie jest zaznaczony");
+					JOptionPane.showMessageDialog(null, "Żaden rekord do edytowania nie jest zaznaczony");
 				}
 				else {
 					UpdateStudentWindow updateStudentWindow;
@@ -175,5 +192,26 @@ public class EditStudentsWindow extends JFrame {
 		btnUpdate.setBounds(800, 0, 400, 52);
 		btnUpdate.setBackground(new Color(252, 173, 3));
 		contentPane.add(btnUpdate);
+		
+		JButton btnBack = new JButton("Back");
+		btnBack.addActionListener(new ActionListener() {
+			public void actionPerformed(ActionEvent e) {
+				dispose();
+				MainWindow mainWindow;
+				try {
+					mainWindow = new MainWindow();
+					mainWindow.setVisible(true);
+				} catch (ClassNotFoundException | SQLException e1) {
+					// TODO Auto-generated catch block
+					e1.printStackTrace();
+				}
+				
+			}
+		});
+		btnBack.setFont(new Font("Arial", Font.PLAIN, 18));
+		btnBack.setBackground(new Color(77, 255, 77));
+		btnBack.setBounds(400, 611, 400, 52);
+		contentPane.add(btnBack);
+		
 	}
 }

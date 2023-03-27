@@ -1,8 +1,11 @@
 package AppJava;
 
 import java.awt.EventQueue;
+import java.awt.event.ActionEvent;
+import java.awt.event.ActionListener;
 import java.sql.SQLException;
 
+import javax.swing.JButton;
 import javax.swing.JFrame;
 import javax.swing.JPanel;
 import javax.swing.border.EmptyBorder;
@@ -20,7 +23,6 @@ public class MainWindow extends JFrame {
 			public void run() {
 				try {
 					MainWindow frame = new MainWindow();
-					HomeWindow homeWindow = new HomeWindow();
 					frame.setVisible(true);
 					//homeWindow.setVisible(true);
 				} catch (Exception e) {
@@ -37,12 +39,36 @@ public class MainWindow extends JFrame {
 	 */
 	public MainWindow() throws ClassNotFoundException, SQLException {
 		setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
-		setBounds(100, 100, 450, 300);
+		setResizable(false);
+		setSize(1200,700);
+		setLocationRelativeTo(null);
+		
 		contentPane = new JPanel();
 		contentPane.setBorder(new EmptyBorder(5, 5, 5, 5));
 
 		setContentPane(contentPane);
 		conn.Connect();
+		
+		JButton btnEditStudents = new JButton("Edycja Uczniow");
+		btnEditStudents.addActionListener(new ActionListener() {
+			public void actionPerformed(ActionEvent e)
+			{
+				
+				EditStudentsWindow editStudentWindow;
+				try {
+					dispose();
+					editStudentWindow = new EditStudentsWindow();
+					editStudentWindow.setVisible(true);
+				} catch (SQLException e1) {
+					// TODO Auto-generated catch block
+					e1.printStackTrace();
+				}
+				
+
+			}
+		});
+		
+		contentPane.add(btnEditStudents);
 	}
 
 }
