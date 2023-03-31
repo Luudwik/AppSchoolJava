@@ -6,6 +6,8 @@ import java.awt.EventQueue;
 import java.awt.Font;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.sql.Connection;
+import java.sql.PreparedStatement;
 import java.sql.SQLException;
 
 import javax.swing.JButton;
@@ -18,11 +20,16 @@ import javax.swing.border.EmptyBorder;
 public class UpdateStudentWindow extends JFrame {
 
 	private JPanel contentPane;
+	private DbConn dbConn = new DbConn();
+	/**
+	 * This set of public variable is used in other window (EditStudentsWindow)
+	 */
 	public JTextField textFieldName;
 	public JTextField textFieldSurname;
 	public JTextField textFieldPhone;
 	public JTextField textFieldClass;
 	public String sqlId;
+	
 
 	/**
 	 * Launch the application.
@@ -115,6 +122,10 @@ public class UpdateStudentWindow extends JFrame {
 		
 		JButton btnUpdate = new JButton("Update");
 		btnUpdate.addActionListener(new ActionListener() {
+			/**
+			 * Validation and update students data
+			 * @param e focus on click
+			 */
 			public void actionPerformed(ActionEvent e) {
 				DbConn dbConn = new DbConn();
 				try {
@@ -132,10 +143,10 @@ public class UpdateStudentWindow extends JFrame {
 						String surname = textFieldSurname.getText().toLowerCase();
 						surname = surname.substring(0,1).toUpperCase() + surname.substring(1).toLowerCase();
 						
-						dbConn.Connect();
-						dbConn.pst = dbConn.con.prepareStatement("UPDATE `Students` SET `name` = '"+name+"', `surname` = '"+surname+"', `phone` = '"+textFieldPhone.getText()+"', `class` = '"+textFieldClass.getText()+"' WHERE `Students`.`id` = "+sqlId);
-						//dbConn.pst = dbConn.con.prepareStatement("INSERT INTO `Students` (`id`, `name`, `surname`, `phone`, `class`) VALUES (NULL, '"+textFieldName.getText()+"', '"+textFieldSurname.getText()+"', '"+textFieldPhone.getText()+"', '"+textFieldClass.getText()+"')");
-						dbConn.pst.execute();
+						Connection con = dbConn.Connect();
+						PreparedStatement pst;
+						pst =con.prepareStatement("UPDATE `Students` SET `name` = '"+name+"', `surname` = '"+surname+"', `phone` = '"+textFieldPhone.getText()+"', `class` = '"+textFieldClass.getText()+"' WHERE `Students`.`id` = "+sqlId);
+						pst.execute();
 						dispose();
 						EditStudentsWindow editStudentsWindow = new EditStudentsWindow();
 						editStudentsWindow.setVisible(true);
@@ -167,8 +178,6 @@ public class UpdateStudentWindow extends JFrame {
 					// TODO Auto-generated catch block
 					e1.printStackTrace();
 				}
-				
-				
 			}
 		});
 		btnBack.setFont(new Font("Arial", Font.PLAIN, 20));

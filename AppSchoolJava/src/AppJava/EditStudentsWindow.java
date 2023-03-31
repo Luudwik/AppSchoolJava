@@ -3,6 +3,9 @@ package AppJava;
 import java.awt.BorderLayout;
 import java.awt.Color;
 import java.awt.EventQueue;
+import java.sql.Connection;
+import java.sql.PreparedStatement;
+import java.sql.ResultSet;
 import java.sql.SQLException;
 
 import javax.swing.BorderFactory;
@@ -28,7 +31,8 @@ public class EditStudentsWindow extends JFrame {
 	private DefaultTableModel tableModel;
 	private JTable table;
 	private JScrollPane scrollPane;
-	String tekst = "";
+	private String tekst = "";
+	private DbConn dbConn = new DbConn();
 
 	/**
 	 * Launch the application.
@@ -45,6 +49,9 @@ public class EditStudentsWindow extends JFrame {
 			}
 		});
 	}
+	/**
+	 * read data from database and display in table
+	 */
 	public void ReadDataFromDatabase()
 	{
 		try {
@@ -55,13 +62,15 @@ public class EditStudentsWindow extends JFrame {
 			    }
 			}
 			
-			DbConn dbConn = new DbConn();
-			dbConn.Connect();
-			dbConn.pst = dbConn.con.prepareStatement("SELECT * FROM Students");
-			dbConn.rs = dbConn.pst.executeQuery();
-			while(dbConn.rs.next())
+			Connection con =  dbConn.Connect();
+			PreparedStatement pst;
+			ResultSet rs;
+			pst = con.prepareStatement("SELECT * FROM Students");
+			rs = pst.executeQuery();
+			while(rs.next())
 			{
-				tableModel.insertRow(0, new Object[] {dbConn.rs.getInt(1), dbConn.rs.getString(2), dbConn.rs.getString(3), dbConn.rs.getInt(4), dbConn.rs.getString(5),});
+				tableModel.insertRow(0, new Object[] {rs.getInt(1), rs.getString(2), 
+						rs.getString(3), rs.getInt(4), rs.getString(5),});
 
 			}
 			if(table != null) {
@@ -90,7 +99,6 @@ public class EditStudentsWindow extends JFrame {
 		contentPane.setBorder(new EmptyBorder(5, 0, 5, 0));
 		contentPane.setLayout(null);
 		setContentPane(contentPane);
-		
 		
 		tableModel = new DefaultTableModel();
 		tableModel.addColumn("id");
@@ -122,8 +130,11 @@ public class EditStudentsWindow extends JFrame {
 		
 		JButton btnDelete = new JButton("Delete");
 		btnDelete.addActionListener(new ActionListener() {
+			/**
+			 * Delete student from database and table
+			 * @param e focus on click
+			 */
 			public void actionPerformed(ActionEvent e) {
-				System.out.println(table.getSelectedRow());
 				if(table.getSelectedRow() == -1) {
 					JOptionPane.showMessageDialog(null, "Żaden rekord do usunięcia nie jest zaznaczony");
 				}
@@ -133,12 +144,10 @@ public class EditStudentsWindow extends JFrame {
 					
 						try {
 							System.out.println(table.getSelectedRow());
-							DbConn dbConn = new DbConn();
-							dbConn.Connect();
-							dbConn.pst = dbConn.con.prepareStatement("DELETE FROM `Students` WHERE `Students`.`id` = "+sqlID);
-							dbConn.pst.execute();
-							//ReadDataFromDatabase();
-							//table.clearSelection();
+							Connection con =  dbConn.Connect();
+							PreparedStatement pst;
+							pst = con.prepareStatement("DELETE FROM `Students` WHERE `Students`.`id` = "+sqlID);
+							pst.execute();
 							
 						} catch (Exception e1) {
 							// TODO Auto-generated catch block
@@ -165,6 +174,10 @@ public class EditStudentsWindow extends JFrame {
 		
 		JButton btnUpdate = new JButton("Edit");
 		btnUpdate.addActionListener(new ActionListener() {
+			/**
+			 * Open window to edit student data
+			 * @param e focus on click
+			 */
 			public void actionPerformed(ActionEvent e) {
 				if(table.getSelectedRow() == -1) {
 					JOptionPane.showMessageDialog(null, "Żaden rekord do edytowania nie jest zaznaczony");
@@ -195,6 +208,10 @@ public class EditStudentsWindow extends JFrame {
 		
 		JButton btnBack = new JButton("Back");
 		btnBack.addActionListener(new ActionListener() {
+			/**
+			 * back to previous window
+			 * @param e focus on click
+			 */
 			public void actionPerformed(ActionEvent e) {
 				dispose();
 				MainWindow mainWindow;

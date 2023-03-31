@@ -52,6 +52,10 @@ public class MainWindow extends JFrame {
 		
 		JButton btnNewButton = new JButton("New button");
 		btnNewButton.addActionListener(new ActionListener() {
+			/**
+			 * Open students management window
+			 * @param e focus on click
+			 */
 			public void actionPerformed(ActionEvent e) {
 				dispose();
 				EditStudentsWindow editStudentsWindow;

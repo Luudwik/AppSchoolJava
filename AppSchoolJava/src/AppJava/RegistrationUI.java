@@ -28,16 +28,19 @@ import javax.swing.JComboBox;
 
 public class RegistrationUI {
 
-	JFrame Frame_rej;
+	/**
+	 * This object is used in other window (LoginUI)
+	 */
+	public JFrame Frame_rej;
 	private JTextField tx_name;
 	private JTextField tx_surname;
 	private JTextField tx_login;
 	private JComboBox<String> cb_subjects;
 	private JPasswordField tx_password;
-	public String chooseSubject;
-	public int id_subject;
-	public int id_teacher;
-	DbConn dbConn = new DbConn();
+	private String chooseSubject;
+	private int id_subject;
+	private int id_teacher;
+	private DbConn dbConn = new DbConn();
 
 	/**
 	 * Launch the application.
@@ -55,6 +58,9 @@ public class RegistrationUI {
 		});
 	}
 
+	/**
+	 * Fill combobox with subjects from database
+	 */
 	public void fillCb_Subjects() {
 		try {
 			Connection con = dbConn.Connect();
@@ -72,6 +78,10 @@ public class RegistrationUI {
 		}
 	}
 
+	/**
+	 * Get selected subject
+	 * @return selected subject
+	 */
 	public String getSubjectsValue() {
 		chooseSubject = (String) cb_subjects.getSelectedItem();
 		return chooseSubject;
@@ -173,6 +183,10 @@ public class RegistrationUI {
 
 		JButton btn_register = new JButton("Zarejestruj!");
 		btn_register.addActionListener(new ActionListener() {
+			/**
+			 * Validation and create a new teacher
+			 * @param e focus on click
+			 */
 			@SuppressWarnings("deprecation")
 			public void actionPerformed(ActionEvent e) {
 				String login = tx_login.getText();
@@ -208,6 +222,12 @@ public class RegistrationUI {
 						}
 
 						if (isCorrect) {
+							
+							String name = tx_name.getText();
+							name = name.substring(0,1).toUpperCase() + name.substring(1).toLowerCase();
+							String surname = tx_surname.getText().toLowerCase();
+							surname = surname.substring(0,1).toUpperCase() + surname.substring(1).toLowerCase();
+							
 							// Selecting an ID for the selected subject
 							PreparedStatement pst1 = con.prepareStatement("SELECT id FROM Subjects WHERE name = ?");
 							pst1.setString(1, (String) getSubjectsValue());
@@ -219,8 +239,8 @@ public class RegistrationUI {
 							// Adding data
 							PreparedStatement preparedStatement = con.prepareStatement(
 									"INSERT INTO Teachers (name, surname, login, password) VALUES (?,?,?,?)");
-							preparedStatement.setString(1, tx_name.getText());
-							preparedStatement.setString(2, tx_surname.getText());
+							preparedStatement.setString(1, name);
+							preparedStatement.setString(2, surname);
 							preparedStatement.setString(3, login);
 							preparedStatement.setString(4, password);
 							preparedStatement.executeUpdate();
@@ -261,6 +281,10 @@ public class RegistrationUI {
 
 		JButton btn_back = new JButton("Wstecz");
 		btn_back.addActionListener(new ActionListener() {
+			/**
+			 * back to previous window
+			 * @param e
+			 */
 			public void actionPerformed(ActionEvent e) {
 				Frame_rej.dispose();
 				LoginUI loginUI = new LoginUI();

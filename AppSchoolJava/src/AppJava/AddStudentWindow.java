@@ -11,6 +11,9 @@ import javax.swing.JLabel;
 import java.awt.Font;
 import javax.swing.JButton;
 import java.awt.event.ActionListener;
+import java.sql.Connection;
+import java.sql.PreparedStatement;
+import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.awt.event.ActionEvent;
 import java.awt.Color;
@@ -22,7 +25,7 @@ public class AddStudentWindow extends JFrame {
 	private JTextField textFieldSurname;
 	private JTextField textFieldPhone;
 	private JTextField textFieldClass;
-
+	private DbConn dbConn = new DbConn();
 	/**
 	 * Launch the application.
 	 */
@@ -95,11 +98,14 @@ public class AddStudentWindow extends JFrame {
 		lblErrorText.setFont(new Font("Arial", Font.PLAIN, 15));
 		lblErrorText.setForeground(Color.RED);
 		lblErrorText.setBounds(25, 504, 335, 49);
-		//lblErrorText.setFont(getFont());
 		contentPane.add(lblErrorText);
 		
 		JButton btnCreate = new JButton("Create");
 		btnCreate.addActionListener(new ActionListener() {
+			/**
+			 * Adding a new student to the database
+			 * @param e focus on click
+			 */
 			public void actionPerformed(ActionEvent e) {
 				DbConn dbConn = new DbConn();
 				try {
@@ -117,10 +123,12 @@ public class AddStudentWindow extends JFrame {
 						String surname = textFieldSurname.getText().toLowerCase();
 						surname = surname.substring(0,1).toUpperCase() + surname.substring(1).toLowerCase();
 						
-						dbConn.Connect();
+						Connection con =  dbConn.Connect();
+						PreparedStatement pst;
 						lblErrorText.setText("");
-						dbConn.pst = dbConn.con.prepareStatement("INSERT INTO `Students` (`id`, `name`, `surname`, `phone`, `class`) VALUES (NULL, '"+name+"', '"+surname+"', '"+textFieldPhone.getText()+"', '"+textFieldClass.getText()+"')");
-						dbConn.pst.execute();
+						pst = con.prepareStatement("INSERT INTO `Students` (`id`, `name`, `surname`, `phone`, `class`) "
+								+ "VALUES (NULL, '"+name+"', '"+surname+"', '"+textFieldPhone.getText()+"', '"+textFieldClass.getText()+"')");
+						pst.execute();
 						dispose();
 						EditStudentsWindow editStudentsWindow = new EditStudentsWindow();
 						editStudentsWindow.setVisible(true);
@@ -144,6 +152,10 @@ public class AddStudentWindow extends JFrame {
 		
 		JButton btnBack = new JButton("Back");
 		btnBack.addActionListener(new ActionListener() {
+			/**
+			 * back to previous window
+			 * @param e focus on click
+			 */
 			public void actionPerformed(ActionEvent e) {
 				dispose();
 				EditStudentsWindow editStudentsWindow;
@@ -162,7 +174,5 @@ public class AddStudentWindow extends JFrame {
 		btnBack.setBounds(25, 416, 94, 49);
 		contentPane.add(btnBack);
 		
-		
-		//INSERT INTO `Students` (`id`, `name`, `surname`, `phone`, `class`) VALUES (NULL, '', '', '', ''), (NULL, 'kacper', 'bandyk', '32131', '3')
 	}
 }

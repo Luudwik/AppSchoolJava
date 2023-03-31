@@ -24,10 +24,13 @@ import java.awt.Font;
 
 public class LoginUI {
 
-	JFrame Frame_log;
+	/**
+	 *  This object is used in other window (MainWindow)
+	 */
+	public JFrame Frame_log;
 	private JTextField tx_login;
 	private JPasswordField tx_password;
-	DbConn dbConn = new DbConn();
+	private DbConn dbConn = new DbConn();
 
 	/**
 	 * Launch the application.
@@ -103,7 +106,10 @@ public class LoginUI {
 
 		JButton btn_logIn = new JButton("Zaloguj!");
 		btn_logIn.addActionListener(new ActionListener() {
-
+			/**
+			 * Validation login data
+			 * @param e focus on click
+			 */
 			@Override
 			public void actionPerformed(ActionEvent e) {
 
@@ -145,6 +151,10 @@ public class LoginUI {
 
 		JButton btn_rej = new JButton("Zarejestruj się");
 		btn_rej.addActionListener(new ActionListener() {
+			/**
+			 * Open registration window
+			 * @param e focus on click
+			 */
 			public void actionPerformed(ActionEvent e) {
 				Frame_log.dispose();
 				RegistrationUI registrationUI = new RegistrationUI();
