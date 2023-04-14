@@ -50,8 +50,9 @@ public class MainWindow extends JFrame {
 
 		setContentPane(contentPane);
 		
-		JButton btnNewButton = new JButton("New button");
-		btnNewButton.addActionListener(new ActionListener() {
+		JButton btnManageStudents = new JButton("Zarządzanie uczniami");
+		btnManageStudents.setBounds(10, 10, 160, 21);
+		btnManageStudents.addActionListener(new ActionListener() {
 			/**
 			 * Open students management window
 			 * @param e focus on click
@@ -69,6 +70,19 @@ public class MainWindow extends JFrame {
 				
 			}
 		});
-		contentPane.add(btnNewButton);
+		contentPane.setLayout(null);
+		contentPane.add(btnManageStudents);
+		
+		JButton btnManageAttendance = new JButton("Zarządzanie frekwencją");
+		btnManageAttendance.setBounds(244, 10, 197, 21);
+		contentPane.add(btnManageAttendance);
+		
+		JButton btnManageGrades = new JButton("Zarządzanie ocenami");
+		btnManageGrades.setBounds(526, 10, 179, 21);
+		contentPane.add(btnManageGrades);
+		
+		JButton btnCreateTest = new JButton("Utwórz test");
+		btnCreateTest.setBounds(807, 10, 146, 21);
+		contentPane.add(btnCreateTest);
 	}
 }
