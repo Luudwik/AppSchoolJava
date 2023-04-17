@@ -78,6 +78,13 @@ public class MainWindow extends JFrame {
 		contentPane.add(btnManageAttendance);
 		
 		JButton btnManageGrades = new JButton("Zarządzanie ocenami");
+		btnManageGrades.addActionListener(new ActionListener() {
+			public void actionPerformed(ActionEvent e) {
+				dispose();
+				GradesWindow gradesWindow = new GradesWindow();
+				gradesWindow.setVisible(true);
+			}
+		});
 		btnManageGrades.setBounds(526, 10, 179, 21);
 		contentPane.add(btnManageGrades);
 		
