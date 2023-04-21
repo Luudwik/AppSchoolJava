@@ -16,6 +16,9 @@ import javax.swing.JFrame;
 import javax.swing.JLabel;
 import javax.swing.JOptionPane;
 import javax.swing.SwingConstants;
+
+import com.mysql.cj.log.Log;
+
 import javax.swing.JPanel;
 import javax.swing.JTextField;
 import javax.swing.JPasswordField;
@@ -31,6 +34,14 @@ public class LoginUI {
 	private JTextField tx_login;
 	private JPasswordField tx_password;
 	private DbConn dbConn = new DbConn();
+	public int id_teacher;
+	public String firstName;
+	public String surname;
+	
+	/*public LoginUI(int id_teacher)
+	{
+		this.id_teacher = id_teacher;
+	}*/
 
 	/**
 	 * Launch the application.
@@ -48,6 +59,9 @@ public class LoginUI {
 		});
 	}
 
+	
+	
+
 	/**
 	 * Create the application.
 	 */
@@ -58,7 +72,7 @@ public class LoginUI {
 	/**
 	 * Initialize the contents of the frame.
 	 */
-	private void initialize() {
+	private void initialize() {		
 		Frame_log = new JFrame();
 		Frame_log.getContentPane().setSize(new Dimension(60, 60));
 		Frame_log.getContentPane().setBackground(new Color(224, 255, 255));
@@ -142,6 +156,33 @@ public class LoginUI {
 				} catch (ClassNotFoundException e1) {
 					JOptionPane.showMessageDialog(null, "Nie znaleziono sterownika MySQL:\n" + e1.getMessage());
 				}
+				
+				try {
+					Connection con = dbConn.Connect();
+
+					// checking the correctness of the login and password
+					PreparedStatement pst = con.prepareStatement(
+							"SELECT id FROM Teachers WHERE BINARY login = ? AND BINARY password = ?");
+					pst.setString(1, login);
+					pst.setString(2, password);
+					ResultSet rs = pst.executeQuery();
+
+					if (rs.next()) {
+						id_teacher = rs.getInt("id");
+						AddGradesWindow addGradesWindow = new AddGradesWindow(id_teacher);
+						
+						System.out.println(id_teacher);
+					} else {
+						JOptionPane.showMessageDialog(null, "Błędne logowanie.");
+					}
+					rs.close();
+					pst.close();
+				} catch (SQLException ex) {
+					JOptionPane.showMessageDialog(null,
+							"Wystąpił błąd podczas połączenia z bazą danych:\n" + ex.getMessage());
+				} catch (ClassNotFoundException e1) {
+					JOptionPane.showMessageDialog(null, "Nie znaleziono sterownika MySQL:\n" + e1.getMessage());
+				}
 			}
 		});
 
@@ -198,5 +239,16 @@ public class LoginUI {
 		Frame_log.setSize(600, 600);
 		Frame_log.setLocationRelativeTo(null);
 		Frame_log.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+
+		
 	}
+	public int getId_teacher() {
+		return id_teacher;
+	}
+	public void setId_teacher(int id_teacher) {
+		this.id_teacher = id_teacher;
+	}
+	
+	
+	
 }

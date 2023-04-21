@@ -15,7 +15,7 @@ import javax.swing.JScrollPane;
 import javax.swing.border.EmptyBorder;
 import javax.swing.table.DefaultTableCellRenderer;
 import javax.swing.table.DefaultTableModel;
-
+import javax.swing.table.TableModel;
 import javax.swing.BorderFactory;
 import javax.swing.Box;
 import javax.swing.BoxLayout;
@@ -36,6 +36,8 @@ import javax.swing.JTable;
 import javax.swing.JComboBox;
 import java.awt.event.ActionListener;
 import java.awt.event.ActionEvent;
+import java.awt.FlowLayout;
+import javax.swing.ListSelectionModel;
 
 @SuppressWarnings("serial")
 public class GradesWindow extends JFrame {
@@ -46,6 +48,26 @@ public class GradesWindow extends JFrame {
 	private JComboBox<String> cb_class;
 	private JComboBox<String> cb_student;
 	private String chooseClass;
+	public String choosedMarkTxt = "";
+	public String choosedTypeTxt = "";
+	public String firstName;
+	public String surname;
+	public int id_teacher;
+
+	
+
+	public GradesWindow(String choosedMarkTxt, String choosedTypeTxt, String firstName, String surname) {
+		this.choosedMarkTxt = choosedMarkTxt;
+		this.choosedTypeTxt = choosedTypeTxt;
+		this.firstName = firstName;
+		this.surname = surname;		
+	}
+	public GradesWindow(String firstName, String surname)
+	{
+		this.firstName = firstName;
+		this.surname = surname;
+	}
+	
 
 	// DefaultTableModel model;
 	DefaultTableModel tableModel = new DefaultTableModel();
@@ -70,6 +92,7 @@ public class GradesWindow extends JFrame {
 	public void fillCb_class() {
 		try {
 			Connection con = dbConn.Connect();
+			cb_class.removeAllItems();
 			PreparedStatement pst = con.prepareStatement("SELECT number FROM Class");
 			ResultSet rs = pst.executeQuery();
 			while (rs.next()) {
@@ -113,6 +136,56 @@ public class GradesWindow extends JFrame {
 	public String getClassValue() {
 		chooseClass = (String) cb_class.getSelectedItem();
 		return chooseClass;
+	}
+
+	public void refreshTable() {
+		try {
+			tableModel.setRowCount(0);
+			String selectedStudent = cb_student.getSelectedItem().toString();
+			String[] nameParts = selectedStudent.split(" ");
+			firstName = nameParts[0];
+			surname = nameParts[1];
+			Connection con = dbConn.Connect();
+			PreparedStatement pst = con.prepareStatement(
+					"SELECT Grades.mark, GradeType.type FROM Students JOIN Grades ON Students.id = Grades.id_student JOIN GradeType ON Grades.id_grade_type = GradeType.id WHERE Students.name = ? AND Students.surname = ?");
+			pst.setString(1, firstName);
+			pst.setString(2, surname);
+			ResultSet rs = pst.executeQuery();
+
+			while (rs.next()) {
+				int mark = rs.getInt("mark");
+				String type = rs.getString("type");
+				tableModel.addRow(new Object[] { mark, type });
+			}
+
+		} catch (SQLException ex) {
+			JOptionPane.showMessageDialog(null, "Wystąpił błąd podczas połączenia z bazą danych:\n" + ex.getMessage());
+		} catch (ClassNotFoundException e1) {
+			e1.printStackTrace();
+		}
+	}
+
+	public void refreshTable(String fn, String sn) {
+		try {
+			tableModel.setRowCount(0);
+			Connection con = dbConn.Connect();
+			PreparedStatement pst = con.prepareStatement(
+					"SELECT Grades.mark, GradeType.type FROM Students JOIN Grades ON Students.id = Grades.id_student JOIN GradeType ON Grades.id_grade_type = GradeType.id WHERE Students.name = ? AND Students.surname = ?");
+			pst.setString(1, fn);
+			pst.setString(2, sn);
+			ResultSet rs = pst.executeQuery();
+
+			while (rs.next()) {
+				int mark = rs.getInt("mark");
+				String type = rs.getString("type");
+				tableModel.addRow(new Object[] { mark, type });
+			}
+
+		} catch (SQLException ex) {
+			JOptionPane.showMessageDialog(null, "Wystąpił błąd podczas połączenia z bazą danych:\n" + ex.getMessage());
+		} catch (ClassNotFoundException e1) {
+			e1.printStackTrace();
+		}
 	}
 
 	/**
@@ -206,38 +279,13 @@ public class GradesWindow extends JFrame {
 		JButton btn_accept = new JButton();
 		btn_accept.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
-				try {
-					tableModel.setRowCount(0);
-					String selectedStudent = cb_student.getSelectedItem().toString();
-					String[] nameParts = selectedStudent.split(" ");
-					String firstName = nameParts[0];
-					String Surname = nameParts[1];
-					Connection con = dbConn.Connect();
-					PreparedStatement pst = con.prepareStatement(
-							"SELECT Grades.mark, GradeType.type FROM Students JOIN Grades ON Students.id = Grades.id_student JOIN GradeType ON Grades.id_grade_type = GradeType.id WHERE Students.name = ? AND Students.surname = ?");
-					pst.setString(1, firstName);
-					pst.setString(2, Surname);
-					ResultSet rs = pst.executeQuery();
-
-					while (rs.next()) {
-						int mark = rs.getInt("mark");
-						String type = rs.getString("type");
-						tableModel.addRow(new Object[] { mark, type });
-					}
-
-				} catch (SQLException ex) {
-					JOptionPane.showMessageDialog(null,
-							"Wystąpił błąd podczas połączenia z bazą danych:\n" + ex.getMessage());
-				} catch (ClassNotFoundException e1) {
-					e1.printStackTrace();
-				}
-
+				refreshTable();
 			}
 		});
 		btn_accept.setFont(new Font("Bodoni MT Condensed", Font.BOLD | Font.ITALIC, (int) (getWidth() * 0.03)));
 		btn_accept.setText("Show grades");
 		btn_accept.setBorder(BorderFactory.createEmptyBorder(5, 5, 5, 5));
-		btn_accept.setBackground(new Color(200, 255, 255));
+		btn_accept.setBackground(new Color(208, 255, 255));
 		panel_3.add(btn_accept);
 
 		Component hs_6 = Box.createHorizontalStrut((panel_3.getWidth() / 3) + 30);
@@ -260,8 +308,9 @@ public class GradesWindow extends JFrame {
 		tableModel.addColumn("Type");
 
 		table_student = new JTable(tableModel);
+		ListSelectionModel selectionModel = table_student.getSelectionModel();
+		table_student.setSelectionMode(ListSelectionModel.SINGLE_SELECTION);
 		table_student.setFont(new Font("Bodoni MT Condensed", Font.BOLD | Font.ITALIC, 30));
-		table_student.setEnabled(false);
 		table_student.setBackground(new Color(255, 255, 255));
 		table_student.setPreferredScrollableViewportSize(new Dimension(650, 100));
 		table_student.setFillsViewportHeight(true);
@@ -278,8 +327,57 @@ public class GradesWindow extends JFrame {
 		JScrollPane scrollPane = new JScrollPane(table_student);
 		panel_2.add(scrollPane);
 
+		JPanel panel_4 = new JPanel();
+		panel_2.add(panel_4, BorderLayout.SOUTH);
+		panel_4.setLayout(new BorderLayout(0, 0));
+		panel_4.setBackground(new Color(224, 255, 255));
+
+		JButton btnNewButton = new JButton("Edit");
+		btnNewButton.addActionListener(new ActionListener() {
+			public void actionPerformed(ActionEvent e) {
+				int selectedRowIndex = selectionModel.getMinSelectionIndex();
+
+				if (selectedRowIndex >= 0) {
+					Object choosedMark = tableModel.getValueAt(selectedRowIndex, 0);
+					Object choosedType = tableModel.getValueAt(selectedRowIndex, 1);
+					choosedMarkTxt = choosedMark.toString();
+					choosedTypeTxt = choosedType.toString();
+
+					if (choosedMarkTxt != null && choosedTypeTxt != null && firstName != null && surname != null) {
+						EditGradesWindow editGradesWindow = new EditGradesWindow(choosedMarkTxt, choosedTypeTxt,
+								firstName, surname);
+						editGradesWindow.setVisible(true);
+					}
+				}
+			}
+		});
+		btnNewButton.setFont(new Font("Bodoni MT Condensed", Font.BOLD | Font.ITALIC, (int) (getWidth() * 0.03)));
+		btnNewButton.setBorder(BorderFactory.createEmptyBorder(5, 50, 5, 50));
+		btnNewButton.setBackground(new Color(208, 255, 255));
+		panel_4.add(btnNewButton, BorderLayout.WEST);
+
+		JButton btnNewButton_1 = new JButton("Add");
+		btnNewButton_1.addActionListener(new ActionListener() {
+			public void actionPerformed(ActionEvent e) {
+				AddGradesWindow addGradesWindow = new AddGradesWindow(firstName, surname);
+				addGradesWindow.setVisible(true);
+			}
+		});
+		btnNewButton_1.setFont(new Font("Bodoni MT Condensed", Font.BOLD | Font.ITALIC, (int) (getWidth() * 0.03)));
+		btnNewButton_1.setBorder(BorderFactory.createEmptyBorder(5, 5, 5, 5));
+		btnNewButton_1.setBackground(new Color(208, 255, 255));
+		panel_4.add(btnNewButton_1, BorderLayout.CENTER);
+
+		JButton btnNewButton_2 = new JButton("Delete");
+		btnNewButton_2.setFont(new Font("Bodoni MT Condensed", Font.BOLD | Font.ITALIC, (int) (getWidth() * 0.03)));
+		btnNewButton_2.setBorder(BorderFactory.createEmptyBorder(5, 50, 5, 50));
+		btnNewButton_2.setBackground(new Color(208, 255, 255));
+		panel_4.add(btnNewButton_2, BorderLayout.EAST);
+
 		fillCb_class();
 		fillCb_Students();
+		table_student.repaint();
+		
 
 	}
 
