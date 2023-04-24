@@ -70,7 +70,6 @@ public class EditGradesWindow extends JFrame {
 	 */
 	public EditGradesWindow(String choosedMarkTxt, String choosedTypeTxt, String firstName, String surname, int choosedIDInt) {
 
-		GradesWindow gradesWindow = new GradesWindow();
 		this.choosedIDInt = choosedIDInt;
 		setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
 		setBounds(100, 100, 680, 560);
@@ -179,12 +178,8 @@ public class EditGradesWindow extends JFrame {
 				} catch (ClassNotFoundException e1) {
 					e1.printStackTrace();
 				}
+				GradesWindow.refreshTable();
 				dispose();
-				//gradesWindow.refreshTable();
-				// GradesWindow gradesWindow = new GradesWindow();
-				// gradesWindow.setVisible(true);
-				//GradesWindow.table_student.revalidate();
-				//GradesWindow.table_student.repaint();
 
 			}
 		});

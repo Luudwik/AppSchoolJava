@@ -272,6 +272,7 @@ public class AddGradesWindow extends JFrame {
 				} catch (ClassNotFoundException e1) {
 					e1.printStackTrace();
 				}
+				GradesWindow.refreshTable();
 			}
 		});
 		btn_Save.setFont(new Font("Bodoni MT Condensed", Font.BOLD | Font.ITALIC, (int) (getWidth() * 0.09)));

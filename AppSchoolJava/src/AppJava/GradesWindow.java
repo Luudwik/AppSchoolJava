@@ -42,14 +42,14 @@ public class GradesWindow extends JFrame {
 
 	private JPanel GradesWindow;
 	public static JTable table_student;
-	private DbConn dbConn = new DbConn();
+	private static DbConn dbConn = new DbConn();
 	private JComboBox<String> cb_class;
-	private JComboBox<String> cb_student;
+	private static JComboBox<String> cb_student;
 	private String chooseClass;
 	public String choosedMarkTxt = "";
 	public String choosedTypeTxt = "";
-	public String firstName;
-	public String surname;
+	public static String firstName;
+	public static String surname;
 	public int choosedIDInt;
 	public int id_teacher;
 	
@@ -68,7 +68,7 @@ public class GradesWindow extends JFrame {
 	
 	
 
-	// DefaultTableModel model;
+	static // DefaultTableModel model;
 	DefaultTableModel tableModel = new DefaultTableModel();
 
 	/**
@@ -139,7 +139,9 @@ public class GradesWindow extends JFrame {
 		return chooseClass;
 	}
 
-	public void refreshTable() {
+
+	
+	public static void refreshTable() {
 		try {
 			tableModel.setRowCount(0);
 			String selectedStudent = cb_student.getSelectedItem().toString();
@@ -169,29 +171,7 @@ public class GradesWindow extends JFrame {
 			e1.printStackTrace();
 		}
 	}
-
-	public void refreshTable(String fn, String sn) {
-		try {
-			tableModel.setRowCount(0);
-			Connection con = dbConn.Connect();
-			PreparedStatement pst = con.prepareStatement(
-					"SELECT Grades.mark, GradeType.type FROM Students JOIN Grades ON Students.id = Grades.id_student JOIN GradeType ON Grades.id_grade_type = GradeType.id WHERE Students.name = ? AND Students.surname = ?");
-			pst.setString(1, fn);
-			pst.setString(2, sn);
-			ResultSet rs = pst.executeQuery();
-
-			while (rs.next()) {
-				int mark = rs.getInt("mark");
-				String type = rs.getString("type");
-				tableModel.addRow(new Object[] { mark, type });
-			}
-
-		} catch (SQLException ex) {
-			JOptionPane.showMessageDialog(null, "Wystąpił błąd podczas połączenia z bazą danych:\n" + ex.getMessage());
-		} catch (ClassNotFoundException e1) {
-			e1.printStackTrace();
-		}
-	}
+	
 
 	/**
 	 * Create the frame.
@@ -436,7 +416,7 @@ public class GradesWindow extends JFrame {
 			} catch (ClassNotFoundException e1) {
 				e1.printStackTrace();
 			}
-				
+				refreshTable();
 			}
 		});
 		btnNewButton_2.setFont(new Font("Bodoni MT Condensed", Font.BOLD | Font.ITALIC, (int) (getWidth() * 0.03)));
