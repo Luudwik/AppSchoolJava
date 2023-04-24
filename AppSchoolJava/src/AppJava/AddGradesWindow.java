@@ -37,6 +37,8 @@ public class AddGradesWindow extends JFrame {
 	private DbConn dbConn = new DbConn();
 	private static int id_teacher;
 	private int id_subject, id_student;
+	private int id_type;
+
 	
 	private LoginUI loginUI = new LoginUI();
 	
@@ -49,7 +51,7 @@ public class AddGradesWindow extends JFrame {
 		EventQueue.invokeLater(new Runnable() {
 			public void run() {
 				try {
-					AddGradesWindow frame = new AddGradesWindow(firstName, surname);
+					AddGradesWindow frame = new AddGradesWindow();
 					frame.setVisible(true);
 				} catch (Exception e) {
 					e.printStackTrace();
@@ -67,14 +69,22 @@ public class AddGradesWindow extends JFrame {
 		//System.out.println(id_teacher);
 	}
 	
+	public AddGradesWindow(String firstName, String surname )
+	{
+		AddGradesWindow.firstName = firstName;
+		AddGradesWindow.surname = surname;
+		//System.out.println(AddGradesWindow.firstName);
+		//System.out.println(AddGradesWindow.surname);
+	}
 	
 	
-	public AddGradesWindow(String firstName, String surname) {
+	
+	public AddGradesWindow() {
 		
-		System.out.println(id_teacher);
+		//System.out.println(id_teacher);
 		this.idTeacher = id_teacher;
 		
-		setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+		setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
 		setBounds(100, 100, 680, 560);
 		jpanel_AddGradesWindow = new JPanel();
 		jpanel_AddGradesWindow.setBackground(new Color(240, 240, 240));
@@ -154,7 +164,7 @@ public class AddGradesWindow extends JFrame {
 			ResultSet rs = pst.executeQuery();
 			while (rs.next()) {
 				id_subject = rs.getInt("id_subject");
-				System.out.println("id_subject: " + id_subject);
+				//System.out.println("id_subject: " + id_subject);
 			}
 			
 			} catch (SQLException ex) {
@@ -167,10 +177,10 @@ public class AddGradesWindow extends JFrame {
 		try {
 			Connection con = dbConn.Connect();
 			PreparedStatement pst = con.prepareStatement("SELECT id FROM Students WHERE name = ? AND surname = ?");
-			pst.setString(1, firstName); 
-			System.out.println("fn: " +firstName);
-			System.out.println("sn: " + surname);
-			pst.setString(2, surname); 
+			pst.setString(1, AddGradesWindow.firstName); 
+			System.out.println("fn: " +AddGradesWindow.firstName);
+			System.out.println("sn: " + AddGradesWindow.surname);
+			pst.setString(2, AddGradesWindow.surname); 
 			ResultSet rs = pst.executeQuery();
 			while (rs.next()) {
 				id_student = rs.getInt("id");
@@ -193,31 +203,44 @@ public class AddGradesWindow extends JFrame {
 		JButton btn_Save = new JButton("Save adding");
 		btn_Save.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
-				
 				mark = tx_mark.getText();
 				type = tx_mark.getText();
 
 				try {
-				Connection con = dbConn.Connect();
-				PreparedStatement pst = con.prepareStatement("INSERT INTO GradeType (type) VALUES (?) " +
-			             "ON DUPLICATE KEY UPDATE id = LAST_INSERT_ID(id); ", Statement.RETURN_GENERATED_KEYS);
-				pst.setString(1, tx_type.getText());
-			    System.out.println(tx_type.getText());         
-				pst.executeUpdate();
-				
-				int id_grade_type = 0; // deklarujesz zmienną id_grade_type, która będzie przechowywać klucz główny dodanej wartości w tabeli GradeType
-			    ResultSet rs = pst.getGeneratedKeys(); // pobierasz wygenerowany klucz
-			    if (rs.next()) {
-			        id_grade_type = rs.getInt("id"); // przypisujesz wygenerowany klucz do zmiennej
-			        System.out.println("gradetype:" + id_grade_type);
-			    }
-				
+				    Connection con = dbConn.Connect();
+				    PreparedStatement pst = con.prepareStatement("INSERT INTO GradeType (type) VALUES (?) " +
+				                 "ON DUPLICATE KEY UPDATE id = LAST_INSERT_ID(); ", Statement.RETURN_GENERATED_KEYS);
+				    pst.setString(1, tx_type.getText());     
+				    pst.executeUpdate();
+				    
+				    ResultSet rs = pst.getGeneratedKeys(); 
+				    if (rs.next()) { 
+				    }
+				    
 				} catch (SQLException ex) {
-					JOptionPane.showMessageDialog(null,
-							"Wystąpił błąd podczas połączenia z bazą danych:\n" + ex.getMessage());
+				    JOptionPane.showMessageDialog(null,
+				            "Wystąpił błąd podczas połączenia z bazą danych:\n" + ex.getMessage());
 				} catch (ClassNotFoundException e1) {
-					e1.printStackTrace();
+				    e1.printStackTrace();
 				}
+				
+				try {
+				    Connection con = dbConn.Connect();
+				    PreparedStatement pst = con.prepareStatement("SELECT id FROM GradeType ORDER BY id DESC LIMIT 1;");     
+				    ResultSet rs = pst.executeQuery(); 
+				    if (rs.next()) {
+				    	id_type = rs.getInt("id"); 
+				    	//System.out.println("ID_TYPE: " + id_type);
+				        
+				    }
+				    
+				} catch (SQLException ex) {
+				    JOptionPane.showMessageDialog(null,
+				            "Wystąpił błąd podczas połączenia z bazą danych:\n" + ex.getMessage());
+				} catch (ClassNotFoundException e1) {
+				    e1.printStackTrace();
+				}
+				
 				
 				try {
 					Connection con = dbConn.Connect();
@@ -230,15 +253,15 @@ public class AddGradesWindow extends JFrame {
 		
 		
 					pst.setInt(1, AddGradesWindow.id_teacher); 
-					System.out.println(AddGradesWindow.id_teacher);
+					//System.out.println(AddGradesWindow.id_teacher);
 					pst.setInt(2, id_student);
-					System.out.println(id_student);
+					System.out.println("idstd: " +id_student);
 					pst.setInt(3, id_subject);
-					System.out.println(id_subject);
+					//System.out.println(id_subject);
 					pst.setInt(4, Integer.parseInt(tx_mark.getText()));
-					System.out.println(Integer.parseInt(tx_mark.getText()));
-					pst.setInt(5, id_student);
-					System.out.println(id_student);
+					//System.out.println(Integer.parseInt(tx_mark.getText()));
+					pst.setInt(5, id_type);
+					//System.out.println(id_student);
 					pst.setInt(6, AddGradesWindow.id_teacher);
 					//System.out.println(AddGradesWindow.id_teacher);
 					pst.executeUpdate();
@@ -255,7 +278,7 @@ public class AddGradesWindow extends JFrame {
 		btn_Save.setBackground(new Color(240, 240, 240));
 		panel_2.add(btn_Save);
 		
-		System.out.println("TojesttO: "+AddGradesWindow.id_teacher);
+		//System.out.println("TojesttO: "+AddGradesWindow.id_teacher);
 		
 	}
 	

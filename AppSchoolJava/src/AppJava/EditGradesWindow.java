@@ -39,6 +39,7 @@ public class EditGradesWindow extends JFrame {
 	public static String choosedTypeTxt;
 	public static String firstName;
 	public static String surname;
+	public static int choosedIDInt;
 
 	/*
 	 * public EditGradesWindow(String choosedMarkTxt, String choosedTypeTxt) {
@@ -54,7 +55,7 @@ public class EditGradesWindow extends JFrame {
 			public void run() {
 				try {
 
-					EditGradesWindow frame = new EditGradesWindow(choosedMarkTxt, choosedTypeTxt, firstName, surname);
+					EditGradesWindow frame = new EditGradesWindow(choosedMarkTxt, choosedTypeTxt, firstName, surname, choosedIDInt);
 					frame.setVisible(true);
 				} catch (Exception e) {
 					e.printStackTrace();
@@ -65,11 +66,12 @@ public class EditGradesWindow extends JFrame {
 
 	/**
 	 * Create the frame.
+	 * @param choosedID 
 	 */
-	public EditGradesWindow(String choosedMarkTxt, String choosedTypeTxt, String firstName, String surname) {
+	public EditGradesWindow(String choosedMarkTxt, String choosedTypeTxt, String firstName, String surname, int choosedIDInt) {
 
 		GradesWindow gradesWindow = new GradesWindow();
-
+		this.choosedIDInt = choosedIDInt;
 		setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
 		setBounds(100, 100, 680, 560);
 		jpanel_EditGradesWindow = new JPanel();
@@ -152,17 +154,18 @@ public class EditGradesWindow extends JFrame {
 		JButton btn_save = new JButton("Save changes");
 		btn_save.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
+				
 				try {
 					Connection con = dbConn.Connect();
 					PreparedStatement pst = con.prepareStatement("UPDATE Grades AS g "
 							+ "JOIN Students AS s ON g.id_student = s.id "
 							+ "JOIN GradeType AS gt ON g.id_grade_type = gt.id " + "SET g.mark = ?, gt.type = ? "
-							+ "WHERE s.name = ? AND s.surname = ? AND g.mark = ? AND gt.type = ?;");
+							+ "WHERE s.name = ? AND s.surname = ? AND g.id = ? AND gt.type = ?;");
 					pst.setInt(1, Integer.parseInt(tx_enterMark.getText()));
 					pst.setString(2, tx_enterType.getText());
 					pst.setString(3, firstName);
 					pst.setString(4, surname);
-					pst.setInt(5, Integer.parseInt(choosedMarkTxt));
+					pst.setInt(5, EditGradesWindow.choosedIDInt);
 					pst.setString(6, choosedTypeTxt);
 
 					int rowsAffected = pst.executeUpdate();
@@ -176,12 +179,12 @@ public class EditGradesWindow extends JFrame {
 				} catch (ClassNotFoundException e1) {
 					e1.printStackTrace();
 				}
-				gradesWindow.refreshTable();
-
 				dispose();
+				//gradesWindow.refreshTable();
 				// GradesWindow gradesWindow = new GradesWindow();
 				// gradesWindow.setVisible(true);
-				// gradesWindow.repaint();
+				//GradesWindow.table_student.revalidate();
+				//GradesWindow.table_student.repaint();
 
 			}
 		});

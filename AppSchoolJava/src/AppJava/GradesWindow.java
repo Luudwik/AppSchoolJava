@@ -15,7 +15,6 @@ import javax.swing.JScrollPane;
 import javax.swing.border.EmptyBorder;
 import javax.swing.table.DefaultTableCellRenderer;
 import javax.swing.table.DefaultTableModel;
-import javax.swing.table.TableModel;
 import javax.swing.BorderFactory;
 import javax.swing.Box;
 import javax.swing.BoxLayout;
@@ -36,14 +35,13 @@ import javax.swing.JTable;
 import javax.swing.JComboBox;
 import java.awt.event.ActionListener;
 import java.awt.event.ActionEvent;
-import java.awt.FlowLayout;
 import javax.swing.ListSelectionModel;
 
 @SuppressWarnings("serial")
 public class GradesWindow extends JFrame {
 
 	private JPanel GradesWindow;
-	private static JTable table_student;
+	public static JTable table_student;
 	private DbConn dbConn = new DbConn();
 	private JComboBox<String> cb_class;
 	private JComboBox<String> cb_student;
@@ -52,8 +50,8 @@ public class GradesWindow extends JFrame {
 	public String choosedTypeTxt = "";
 	public String firstName;
 	public String surname;
+	public int choosedIDInt;
 	public int id_teacher;
-
 	
 
 	public GradesWindow(String choosedMarkTxt, String choosedTypeTxt, String firstName, String surname) {
@@ -67,6 +65,7 @@ public class GradesWindow extends JFrame {
 		this.firstName = firstName;
 		this.surname = surname;
 	}
+	
 	
 
 	// DefaultTableModel model;
@@ -122,15 +121,17 @@ public class GradesWindow extends JFrame {
 			pst.setInt(1, chooseClass);
 			ResultSet rs = pst.executeQuery();
 			while (rs.next()) {
-				String students_name = rs.getString("name");
-				String students_surname = rs.getString("surname");
-				cb_student.addItem(students_name + " " + students_surname);
+				firstName = rs.getString("name");
+				surname = rs.getString("surname");
+				cb_student.addItem(firstName + " " + surname);
+				//AddGradesWindow addGradesWindow = new AddGradesWindow(firstName, surname);
 			}
+			
 		} catch (SQLException e) {
 			JOptionPane.showMessageDialog(null, "Wystąpił błąd podczas połączenia z bazą danych:\n" + e.getMessage());
 		} catch (ClassNotFoundException e1) {
 			e1.printStackTrace();
-		}
+		}		
 	}
 
 	public String getClassValue() {
@@ -145,17 +146,21 @@ public class GradesWindow extends JFrame {
 			String[] nameParts = selectedStudent.split(" ");
 			firstName = nameParts[0];
 			surname = nameParts[1];
+			System.out.println(firstName);
+			System.out.println(surname);
+			AddGradesWindow addGradesWindow = new AddGradesWindow(firstName, surname);
 			Connection con = dbConn.Connect();
 			PreparedStatement pst = con.prepareStatement(
-					"SELECT Grades.mark, GradeType.type FROM Students JOIN Grades ON Students.id = Grades.id_student JOIN GradeType ON Grades.id_grade_type = GradeType.id WHERE Students.name = ? AND Students.surname = ?");
+					"SELECT Grades.id, Grades.mark, GradeType.type FROM Students JOIN Grades ON Students.id = Grades.id_student JOIN GradeType ON Grades.id_grade_type = GradeType.id WHERE Students.name = ? AND Students.surname = ?");
 			pst.setString(1, firstName);
 			pst.setString(2, surname);
 			ResultSet rs = pst.executeQuery();
 
 			while (rs.next()) {
+				int id = rs.getInt("id");
 				int mark = rs.getInt("mark");
 				String type = rs.getString("type");
-				tableModel.addRow(new Object[] { mark, type });
+				tableModel.addRow(new Object[] { id, mark, type });
 			}
 
 		} catch (SQLException ex) {
@@ -273,6 +278,8 @@ public class GradesWindow extends JFrame {
 		cb_student.setBorder(BorderFactory.createEmptyBorder(5, 5, 5, 5));
 		panel_3.add(cb_student, BorderLayout.NORTH);
 
+		
+		
 		Component hs_5 = Box.createHorizontalStrut((panel_3.getWidth() / 3) + 30);
 		panel_3.add(hs_5);
 
@@ -280,6 +287,33 @@ public class GradesWindow extends JFrame {
 		btn_accept.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
 				refreshTable();
+				/*try {
+					tableModel.setRowCount(0);
+					String selectedStudent = cb_student.getSelectedItem().toString();
+					String[] nameParts = selectedStudent.split(" ");
+					firstName = nameParts[0];
+					surname = nameParts[1];
+					System.out.println(firstName);
+					System.out.println(surname);
+					Connection con = dbConn.Connect();
+					PreparedStatement pst = con.prepareStatement(
+							"SELECT Grades.id, Grades.mark, GradeType.type FROM Students JOIN Grades ON Students.id = Grades.id_student JOIN GradeType ON Grades.id_grade_type = GradeType.id WHERE Students.name = ? AND Students.surname = ?");
+					pst.setString(1, firstName);
+					pst.setString(2, surname);
+					ResultSet rs = pst.executeQuery();
+
+					while (rs.next()) {
+						int id = rs.getInt("id");
+						int mark = rs.getInt("mark");
+						String type = rs.getString("type");
+						tableModel.addRow(new Object[] { id, mark, type });
+					}
+
+				} catch (SQLException ex) {
+					JOptionPane.showMessageDialog(null, "Wystąpił błąd podczas połączenia z bazą danych:\n" + ex.getMessage());
+				} catch (ClassNotFoundException e1) {
+					e1.printStackTrace();
+				}*/
 			}
 		});
 		btn_accept.setFont(new Font("Bodoni MT Condensed", Font.BOLD | Font.ITALIC, (int) (getWidth() * 0.03)));
@@ -304,6 +338,7 @@ public class GradesWindow extends JFrame {
 			}
 		});
 
+		tableModel.addColumn("id");
 		tableModel.addColumn("Mark");
 		tableModel.addColumn("Type");
 
@@ -338,14 +373,17 @@ public class GradesWindow extends JFrame {
 				int selectedRowIndex = selectionModel.getMinSelectionIndex();
 
 				if (selectedRowIndex >= 0) {
-					Object choosedMark = tableModel.getValueAt(selectedRowIndex, 0);
-					Object choosedType = tableModel.getValueAt(selectedRowIndex, 1);
+					Object choosedID = tableModel.getValueAt(selectedRowIndex, 0);
+					Object choosedMark = tableModel.getValueAt(selectedRowIndex, 1);
+					Object choosedType = tableModel.getValueAt(selectedRowIndex, 2);
+					String choosedIDTxt = choosedID.toString();
 					choosedMarkTxt = choosedMark.toString();
 					choosedTypeTxt = choosedType.toString();
+					choosedIDInt = Integer.parseInt(choosedIDTxt);
 
 					if (choosedMarkTxt != null && choosedTypeTxt != null && firstName != null && surname != null) {
 						EditGradesWindow editGradesWindow = new EditGradesWindow(choosedMarkTxt, choosedTypeTxt,
-								firstName, surname);
+								firstName, surname, choosedIDInt);
 						editGradesWindow.setVisible(true);
 					}
 				}
@@ -358,8 +396,9 @@ public class GradesWindow extends JFrame {
 
 		JButton btnNewButton_1 = new JButton("Add");
 		btnNewButton_1.addActionListener(new ActionListener() {
-			public void actionPerformed(ActionEvent e) {
-				AddGradesWindow addGradesWindow = new AddGradesWindow(firstName, surname);
+			public void actionPerformed(ActionEvent e) {	
+				refreshTable();
+				AddGradesWindow addGradesWindow = new AddGradesWindow();
 				addGradesWindow.setVisible(true);
 			}
 		});
@@ -369,6 +408,37 @@ public class GradesWindow extends JFrame {
 		panel_4.add(btnNewButton_1, BorderLayout.CENTER);
 
 		JButton btnNewButton_2 = new JButton("Delete");
+		btnNewButton_2.addActionListener(new ActionListener() {
+			public void actionPerformed(ActionEvent e) {
+				try {
+					int selectedRowIndex = selectionModel.getMinSelectionIndex();
+
+					if (selectedRowIndex >= 0) {
+						Object choosedID = tableModel.getValueAt(selectedRowIndex, 0);
+						Object choosedMark = tableModel.getValueAt(selectedRowIndex, 1);
+						Object choosedType = tableModel.getValueAt(selectedRowIndex, 2);
+						String choosedIDTxt = choosedID.toString();
+						choosedMarkTxt = choosedMark.toString();
+						choosedTypeTxt = choosedType.toString();
+						choosedIDInt = Integer.parseInt(choosedIDTxt);
+					}
+				Connection con = dbConn.Connect();
+				PreparedStatement pst = con.prepareStatement(
+						"DELETE FROM Grades, GradeType "
+						+ "USING Grades "
+						+ "JOIN GradeType ON Grades.id_grade_type = GradeType.id "
+						+ "WHERE Grades.id = ?");
+				pst.setInt(1, choosedIDInt);
+				boolean rs = pst.execute();
+
+			} catch (SQLException ex) {
+				JOptionPane.showMessageDialog(null, "Wystąpił błąd podczas połączenia z bazą danych:\n" + ex.getMessage());
+			} catch (ClassNotFoundException e1) {
+				e1.printStackTrace();
+			}
+				
+			}
+		});
 		btnNewButton_2.setFont(new Font("Bodoni MT Condensed", Font.BOLD | Font.ITALIC, (int) (getWidth() * 0.03)));
 		btnNewButton_2.setBorder(BorderFactory.createEmptyBorder(5, 50, 5, 50));
 		btnNewButton_2.setBackground(new Color(208, 255, 255));
@@ -378,7 +448,28 @@ public class GradesWindow extends JFrame {
 		fillCb_Students();
 		table_student.repaint();
 		
+		
+		
 
+	}
+	
+	public int getChoosedIDInt() {
+		return choosedIDInt;
+	}
+	public void setChoosedIDInt(int choosedIDInt) {
+		this.choosedIDInt = choosedIDInt;
+	}
+	public String getFirstName() {
+		return firstName;
+	}
+	public void setFirstName(String firstName) {
+		this.firstName = firstName;
+	}
+	public String getSurname() {
+		return surname;
+	}
+	public void setSurname(String surname) {
+		this.surname = surname;
 	}
 
 }

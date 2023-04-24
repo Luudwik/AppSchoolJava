@@ -64,7 +64,7 @@ public class MainWindow extends JFrame {
 					editStudentsWindow = new EditStudentsWindow();
 					editStudentsWindow.setVisible(true);
 				} catch (SQLException e1) {
-					// TODO Auto-generated catch block
+					
 					e1.printStackTrace();
 				}
 				
