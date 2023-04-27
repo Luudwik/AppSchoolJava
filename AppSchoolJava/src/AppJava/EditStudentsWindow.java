@@ -1,6 +1,5 @@
 package AppJava;
 
-import java.awt.BorderLayout;
 import java.awt.Color;
 import java.awt.EventQueue;
 import java.sql.Connection;
@@ -8,8 +7,6 @@ import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 
-import javax.swing.BorderFactory;
-import javax.swing.ImageIcon;
 import javax.swing.JFrame;
 import javax.swing.JOptionPane;
 import javax.swing.JPanel;
@@ -17,11 +14,8 @@ import javax.swing.border.EmptyBorder;
 import javax.swing.table.DefaultTableModel;
 import javax.swing.JScrollPane;
 import javax.swing.JTable;
-import javax.swing.SwingConstants;
 import javax.swing.JButton;
 import java.awt.Font;
-import java.awt.GraphicsDevice;
-import java.awt.GraphicsEnvironment;
 import java.awt.event.ActionListener;
 import java.awt.event.ActionEvent;
 
@@ -31,7 +25,6 @@ public class EditStudentsWindow extends JFrame {
 	private DefaultTableModel tableModel;
 	private JTable table;
 	private JScrollPane scrollPane;
-	private String tekst = "";
 	private DbConn dbConn = new DbConn();
 
 	/**
@@ -80,7 +73,7 @@ public class EditStudentsWindow extends JFrame {
 			scrollPane = new JScrollPane(table);
 			
 		} catch (ClassNotFoundException | SQLException e) {
-			// TODO Auto-generated catch block
+			
 			e.printStackTrace();
 		}
 	}
@@ -90,7 +83,7 @@ public class EditStudentsWindow extends JFrame {
 	 * @throws SQLException 
 	 */
 	public EditStudentsWindow() throws SQLException {
-		setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+		setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
 		setResizable(false);
 		setSize(1200,700);
 		setLocationRelativeTo(null);
@@ -139,21 +132,18 @@ public class EditStudentsWindow extends JFrame {
 					JOptionPane.showMessageDialog(null, "Żaden rekord do usunięcia nie jest zaznaczony");
 				}
 				else {
-					
 					String sqlID = tableModel.getValueAt(table.getSelectedRow(), 0).toString();
 					
 						try {
-							System.out.println(table.getSelectedRow());
 							Connection con =  dbConn.Connect();
 							PreparedStatement pst;
 							pst = con.prepareStatement("DELETE FROM `Students` WHERE `Students`.`id` = "+sqlID);
 							pst.execute();
 							
 						} catch (Exception e1) {
-							// TODO Auto-generated catch block
+							
 							e1.printStackTrace();
 						}
-					
 				}
 				dispose();
 				EditStudentsWindow editStudentsWindow;
@@ -161,10 +151,9 @@ public class EditStudentsWindow extends JFrame {
 					editStudentsWindow = new EditStudentsWindow();
 					editStudentsWindow.setVisible(true);
 				} catch (SQLException e1) {
-					// TODO Auto-generated catch block
+					
 					e1.printStackTrace();
-				}
-				
+				}	
 			}
 		});
 		btnDelete.setFont(new Font("Arial", Font.PLAIN, 18));
@@ -194,10 +183,9 @@ public class EditStudentsWindow extends JFrame {
 						updateStudentWindow.setVisible(true);
 						dispose();
 					} catch (SQLException e1) {
-						// TODO Auto-generated catch block
+						
 						e1.printStackTrace();
-					}
-					
+					}					
 				}
 			}
 		});
@@ -219,7 +207,7 @@ public class EditStudentsWindow extends JFrame {
 					mainWindow = new MainWindow();
 					mainWindow.setVisible(true);
 				} catch (ClassNotFoundException | SQLException e1) {
-					// TODO Auto-generated catch block
+					
 					e1.printStackTrace();
 				}
 				
