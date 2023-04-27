@@ -89,6 +89,14 @@ public class MainWindow extends JFrame {
 		contentPane.add(btnManageGrades);
 		
 		JButton btnCreateTest = new JButton("Utwórz test");
+		btnCreateTest.addActionListener(new ActionListener() {
+			public void actionPerformed(ActionEvent e) {
+				TestCreatorWindow testCreatorWindow = new TestCreatorWindow();
+				testCreatorWindow.setVisible(true);
+				dispose();
+				
+			}
+		});
 		btnCreateTest.setBounds(807, 10, 146, 21);
 		contentPane.add(btnCreateTest);
 	}
