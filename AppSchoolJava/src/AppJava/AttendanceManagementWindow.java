@@ -27,16 +27,10 @@ public class AttendanceManagementWindow extends JFrame {
 	public AttendanceManagementWindow(int teacherId) {
 		AttendanceManagementWindow.teacherId = teacherId;
 		subjectComboBox = new JComboBox<>();
-
-		try {
-			loadSubjects();
-		} catch (SQLException | ClassNotFoundException e) {
-			e.printStackTrace();
-		}
 	}
 
 	public static void main(String[] args) {
-		// int teacherId = 0;
+		//int teacherId = 0;
 		EventQueue.invokeLater(new Runnable() {
 			public void run() {
 				try {
@@ -75,8 +69,13 @@ public class AttendanceManagementWindow extends JFrame {
 		refreshButton.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
 				try {
+					subjectComboBox.removeAllItems();
+					loadSubjects();
 					refreshTableData();
 				} catch (ClassNotFoundException e1) {
+					e1.printStackTrace();
+				} catch (SQLException e1) {
+					// TODO Auto-generated catch block
 					e1.printStackTrace();
 				}
 			}
@@ -100,7 +99,7 @@ public class AttendanceManagementWindow extends JFrame {
 		JButton editButton = new JButton("Edit");
 		editButton.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
-				// showEditAttendanceDialog();
+				showEditAttendanceDialog();
 			}
 		});
 		buttonPanel.add(editButton);
@@ -108,7 +107,7 @@ public class AttendanceManagementWindow extends JFrame {
 		JButton deleteButton = new JButton("Delete");
 		deleteButton.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
-				// deleteSelectedAttendance();
+				deleteSelectedAttendance();
 			}
 		});
 		buttonPanel.add(deleteButton);
@@ -119,14 +118,29 @@ public class AttendanceManagementWindow extends JFrame {
 			public void actionPerformed(ActionEvent e) {
 				try {
 					refreshTableData();
-					revalidate();
-					repaint();
-				} catch (Exception e2) {
-					e2.printStackTrace();
+				} catch (ClassNotFoundException e1) {
+					// TODO Auto-generated catch block
+					e1.printStackTrace();
 				}
 			}
 		});
 		buttonPanel.add(subjectComboBox);
+
+		JButton backButton = new JButton("Back to menu");
+		backButton.addActionListener(new ActionListener() {
+			public void actionPerformed(ActionEvent e) {
+				dispose();
+				MainWindow mainWindow = null;
+				try {
+					mainWindow = new MainWindow();
+				} catch (ClassNotFoundException | SQLException e1) {
+					// TODO Auto-generated catch block
+					e1.printStackTrace();
+				}
+				mainWindow.setVisible(true);
+			}
+		});
+		buttonPanel.add(backButton);
 
 		// Inicjalizacja modelu tabeli
 		tableModel = new DefaultTableModel();
@@ -140,6 +154,159 @@ public class AttendanceManagementWindow extends JFrame {
 
 		refreshTableData();
 		loadSubjects();
+	}
+
+	private void deleteSelectedAttendance() {
+		// Sprawdź, czy został wybrany rekord do usunięcia
+		int selectedRow = table.getSelectedRow();
+		if (selectedRow == -1) {
+			JOptionPane.showMessageDialog(this, "No attendance record selected.", "Error", JOptionPane.ERROR_MESSAGE);
+			return;
+		}
+
+		// Pobierz ID wybranego rekordu
+		int attendanceId = (int) table.getValueAt(selectedRow, 0);
+
+		int confirm = JOptionPane.showConfirmDialog(this, "Are you sure you want to delete this attendance record?",
+				"Confirm Deletion", JOptionPane.YES_NO_OPTION);
+		
+		if (confirm == JOptionPane.YES_OPTION) {
+			try {
+				Connection connection = dbConn.Connect();
+				String query = "DELETE FROM Attendance WHERE id = ?";
+				PreparedStatement statement = connection.prepareStatement(query);
+				statement.setInt(1, attendanceId);
+				statement.executeUpdate();
+				statement.close();
+				connection.close();
+
+				tableModel.removeRow(selectedRow);
+				// JOptionPane.showMessageDialog(this, "Attendance record deleted successfully.", "Success", JOptionPane.INFORMATION_MESSAGE);
+			} catch (SQLException e) {
+				e.printStackTrace();
+				JOptionPane.showMessageDialog(this, "Failed to delete attendance record.", "Error", JOptionPane.ERROR_MESSAGE);
+			} catch (ClassNotFoundException e) {
+				e.printStackTrace();
+			}
+		}
+	}
+
+	private void showEditAttendanceDialog() {
+		// Sprawdź, czy został wybrany rekord do edycji
+		int selectedRow = table.getSelectedRow();
+		if (selectedRow == -1) {
+			JOptionPane.showMessageDialog(this, "No attendance record selected.", "Error", JOptionPane.ERROR_MESSAGE);
+			return;
+		}
+
+		// Pobierz dane z wybranego rekordu
+		int attendanceId = (int) table.getValueAt(selectedRow, 0);
+		String teacherName = (String) table.getValueAt(selectedRow, 1);
+		String studentName = (String) table.getValueAt(selectedRow, 2);
+		String subjectName = (String) table.getValueAt(selectedRow, 3);
+		String dateString = (String) table.getValueAt(selectedRow, 4);
+		String presenceText = (String) table.getValueAt(selectedRow, 5);
+		boolean isPresent = presenceText.equals("Obecny");
+
+		// Tworzenie okna dialogowego
+		JDialog dialog = new JDialog(this, "Edit Attendance", true);
+		dialog.setSize(300, 310);
+		dialog.setDefaultCloseOperation(JDialog.DISPOSE_ON_CLOSE);
+		dialog.setLocationRelativeTo(this);
+
+		// Panel główny
+		JPanel mainPanel = new JPanel();
+		mainPanel.setLayout(new BoxLayout(mainPanel, BoxLayout.Y_AXIS));
+		mainPanel.setBorder(new EmptyBorder(10, 10, 10, 10));
+
+		// Panel danych rekordu
+		JPanel dataPanel = new JPanel(new GridLayout(5, 2, 10, 10));
+
+		// Tworzenie elementów formularza
+		JLabel teacherLabel = new JLabel("Teacher:");
+		JTextField teacherField = new JTextField(teacherName);
+		teacherField.setEditable(false);
+
+		JLabel studentLabel = new JLabel("Student:");
+		JTextField studentField = new JTextField(studentName);
+		studentField.setEditable(false);
+
+		JLabel subjectLabel = new JLabel("Subject:");
+		JTextField subjectField = new JTextField(subjectName);
+		subjectField.setEditable(false);
+
+		JLabel dateLabel = new JLabel("Date:");
+		JTextField dateField = new JTextField(dateString);
+		dateField.setEditable(false);
+
+		JLabel presenceLabel = new JLabel("Presence:");
+		JCheckBox presenceCheckBox = new JCheckBox("Present", isPresent);
+
+		// Dodawanie elementów do panelu danych rekordu
+		dataPanel.add(teacherLabel);
+		dataPanel.add(teacherField);
+		dataPanel.add(studentLabel);
+		dataPanel.add(studentField);
+		dataPanel.add(subjectLabel);
+		dataPanel.add(subjectField);
+		dataPanel.add(dateLabel);
+		dataPanel.add(dateField);
+		dataPanel.add(presenceLabel);
+		dataPanel.add(presenceCheckBox);
+
+		// Panel przycisków
+		JPanel buttonPanel = new JPanel();
+		buttonPanel.setLayout(new FlowLayout(FlowLayout.RIGHT));
+
+		// Przycisk zapisu zmian
+		JButton saveButton = new JButton("Save");
+		saveButton.addActionListener(new ActionListener() {
+			@Override
+			public void actionPerformed(ActionEvent e) {
+				// Pobierz zmienione dane z formularza
+				boolean updatedPresence = presenceCheckBox.isSelected();
+
+				try {
+					Connection connection = dbConn.Connect();
+					String query = "UPDATE Attendance SET presence = ? WHERE id = ?";
+					PreparedStatement statement = connection.prepareStatement(query);
+					statement.setInt(1, updatedPresence ? 1 : 0);
+					statement.setInt(2, attendanceId);
+					statement.executeUpdate();
+					statement.close();
+					connection.close();
+
+					table.setValueAt(updatedPresence ? "Obecny" : "Nieobecny", selectedRow, 5);
+					// JOptionPane.showMessageDialog(dialog, "Attendance record updated
+					// successfully.", "Success", JOptionPane.INFORMATION_MESSAGE);
+					dialog.dispose();
+
+				} catch (SQLException ex) {
+					ex.printStackTrace();
+					JOptionPane.showMessageDialog(dialog, "Failed to update attendance record.", "Error", JOptionPane.ERROR_MESSAGE);
+				} catch (ClassNotFoundException e1) {
+					// TODO Auto-generated catch block
+					e1.printStackTrace();
+				}
+			}
+		});
+		JButton cancelButton = new JButton("Cancel");
+		cancelButton.addActionListener(new ActionListener() {
+			@Override
+			public void actionPerformed(ActionEvent e) {
+				dialog.dispose();
+			}
+		});
+
+		buttonPanel.add(saveButton);
+		buttonPanel.add(cancelButton);
+
+		mainPanel.add(dataPanel);
+		mainPanel.add(Box.createVerticalStrut(10));
+		mainPanel.add(buttonPanel);
+
+		dialog.setContentPane(mainPanel);
+		dialog.setVisible(true);
 	}
 
 	private void refreshTableData() throws ClassNotFoundException {
@@ -264,6 +431,7 @@ public class AttendanceManagementWindow extends JFrame {
 		panel.add(inputPanel, BorderLayout.CENTER);
 
 		int option = JOptionPane.showConfirmDialog(null, panel, "Add Attendance", JOptionPane.OK_CANCEL_OPTION);
+		
 		if (option == JOptionPane.OK_OPTION) {
 			String selectedStudent = (String) studentComboBox.getSelectedItem();
 			String subjectName = (String) subjectComboBox.getSelectedItem();
@@ -291,8 +459,7 @@ public class AttendanceManagementWindow extends JFrame {
 				e.printStackTrace();
 			}
 			studentComboBox.setSelectedItem(selectedStudent);
-			subjectComboBox.removeAllItems();
-			refreshTableData();
+			//subjectComboBox.removeAllItems();
 			loadSubjects();
 			refreshTableData();
 		}
