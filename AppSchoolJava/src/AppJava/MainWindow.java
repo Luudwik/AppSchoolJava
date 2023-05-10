@@ -74,6 +74,22 @@ public class MainWindow extends JFrame {
 		contentPane.add(btnManageStudents);
 		
 		JButton btnManageAttendance = new JButton("Zarządzanie frekwencją");
+		btnManageAttendance.addActionListener(new ActionListener() {
+			public void actionPerformed(ActionEvent e) {
+				dispose();
+				AttendanceManagementWindow attendanceManagementWindow = null;
+				try {
+					attendanceManagementWindow = new AttendanceManagementWindow();
+				} catch (ClassNotFoundException e1) {
+					// TODO Auto-generated catch block
+					e1.printStackTrace();
+				} catch (SQLException e1) {
+					// TODO Auto-generated catch block
+					e1.printStackTrace();
+				}
+				attendanceManagementWindow.setVisible(true);
+			}
+		});
 		btnManageAttendance.setBounds(244, 10, 197, 21);
 		contentPane.add(btnManageAttendance);
 		

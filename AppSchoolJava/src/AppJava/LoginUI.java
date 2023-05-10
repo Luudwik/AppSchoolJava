@@ -170,6 +170,7 @@ public class LoginUI {
 					if (rs.next()) {
 						id_teacher = rs.getInt("id");
 						AddGradesWindow addGradesWindow = new AddGradesWindow(id_teacher);
+						AttendanceManagementWindow attendanceManagementWindow = new AttendanceManagementWindow(id_teacher);
 					} else {
 						JOptionPane.showMessageDialog(null, "Błędne logowanie.");
 					}
