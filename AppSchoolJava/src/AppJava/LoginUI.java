@@ -87,7 +87,7 @@ public class LoginUI {
 		Frame_log.getContentPane().add(panel);
 		panel.setLayout(null);
 
-		tx_login = new JTextField();
+		tx_login = new JTextField("Sins12");
 		tx_login.setFont(new Font("Tahoma", Font.PLAIN, 30));
 		tx_login.setToolTipText("Podaj login: minimalnie 6 znaków, pierwsza litera z dużej");
 		tx_login.setBounds(10, 11, 285, 60);
@@ -106,7 +106,7 @@ public class LoginUI {
 		panel_1.setLayout(null);
 		Frame_log.getContentPane().add(panel_1);
 
-		tx_password = new JPasswordField();
+		tx_password = new JPasswordField("Haslo12345");
 		tx_password.setFont(new Font("Tahoma", Font.PLAIN, 30));
 		tx_password.setToolTipText("Podaj hasło: minimalnie 8 znaków");
 		tx_password.setBounds(10, 11, 285, 60);

@@ -2,6 +2,7 @@ package AppJava;
 
 import javax.swing.*;
 import javax.swing.border.EmptyBorder;
+import javax.swing.table.DefaultTableCellRenderer;
 import javax.swing.table.DefaultTableModel;
 import java.awt.*;
 import java.awt.event.ActionEvent;
@@ -118,9 +119,8 @@ public class AttendanceManagementWindow extends JFrame {
 			public void actionPerformed(ActionEvent e) {
 				try {
 					refreshTableData();
-				} catch (ClassNotFoundException e1) {
-					// TODO Auto-generated catch block
-					e1.printStackTrace();
+				} catch (Exception e2) {
+					e2.printStackTrace();
 				}
 			}
 		});
@@ -151,6 +151,13 @@ public class AttendanceManagementWindow extends JFrame {
 		tableModel.addColumn("Date");
 		tableModel.addColumn("Presence");
 		table.setModel(tableModel);
+		table.getColumnModel().getColumn(0).setPreferredWidth(50);
+		table.getColumnModel().getColumn(0).setMaxWidth(50);
+		table.getColumnModel().getColumn(0).setMinWidth(50);
+
+		DefaultTableCellRenderer centerRenderer = new DefaultTableCellRenderer();
+		centerRenderer.setHorizontalAlignment(SwingConstants.CENTER);
+		table.setDefaultRenderer(Object.class, centerRenderer);
 
 		refreshTableData();
 		loadSubjects();
@@ -169,7 +176,7 @@ public class AttendanceManagementWindow extends JFrame {
 
 		int confirm = JOptionPane.showConfirmDialog(this, "Are you sure you want to delete this attendance record?",
 				"Confirm Deletion", JOptionPane.YES_NO_OPTION);
-		
+
 		if (confirm == JOptionPane.YES_OPTION) {
 			try {
 				Connection connection = dbConn.Connect();
@@ -181,10 +188,12 @@ public class AttendanceManagementWindow extends JFrame {
 				connection.close();
 
 				tableModel.removeRow(selectedRow);
-				// JOptionPane.showMessageDialog(this, "Attendance record deleted successfully.", "Success", JOptionPane.INFORMATION_MESSAGE);
+				// JOptionPane.showMessageDialog(this, "Attendance record deleted
+				// successfully.", "Success", JOptionPane.INFORMATION_MESSAGE);
 			} catch (SQLException e) {
 				e.printStackTrace();
-				JOptionPane.showMessageDialog(this, "Failed to delete attendance record.", "Error", JOptionPane.ERROR_MESSAGE);
+				JOptionPane.showMessageDialog(this, "Failed to delete attendance record.", "Error",
+						JOptionPane.ERROR_MESSAGE);
 			} catch (ClassNotFoundException e) {
 				e.printStackTrace();
 			}
@@ -283,7 +292,8 @@ public class AttendanceManagementWindow extends JFrame {
 
 				} catch (SQLException ex) {
 					ex.printStackTrace();
-					JOptionPane.showMessageDialog(dialog, "Failed to update attendance record.", "Error", JOptionPane.ERROR_MESSAGE);
+					JOptionPane.showMessageDialog(dialog, "Failed to update attendance record.", "Error",
+							JOptionPane.ERROR_MESSAGE);
 				} catch (ClassNotFoundException e1) {
 					// TODO Auto-generated catch block
 					e1.printStackTrace();
@@ -382,7 +392,6 @@ public class AttendanceManagementWindow extends JFrame {
 		statement.close();
 		connection.close();
 
-		// Po załadowaniu przedmiotów odświeżamy dane w tabeli
 		refreshTableData();
 	}
 
@@ -394,7 +403,7 @@ public class AttendanceManagementWindow extends JFrame {
 			@Override
 			public void actionPerformed(ActionEvent e) {
 				try {
-					refreshTableData(); // Po zmianie przedmiotu odświeżamy dane w tabeli
+					refreshTableData();
 				} catch (Exception e2) {
 					e2.printStackTrace();
 				}
@@ -431,7 +440,7 @@ public class AttendanceManagementWindow extends JFrame {
 		panel.add(inputPanel, BorderLayout.CENTER);
 
 		int option = JOptionPane.showConfirmDialog(null, panel, "Add Attendance", JOptionPane.OK_CANCEL_OPTION);
-		
+
 		if (option == JOptionPane.OK_OPTION) {
 			String selectedStudent = (String) studentComboBox.getSelectedItem();
 			String subjectName = (String) subjectComboBox.getSelectedItem();
@@ -459,8 +468,7 @@ public class AttendanceManagementWindow extends JFrame {
 				e.printStackTrace();
 			}
 			studentComboBox.setSelectedItem(selectedStudent);
-			//subjectComboBox.removeAllItems();
-			loadSubjects();
+			
 			refreshTableData();
 		}
 	}
