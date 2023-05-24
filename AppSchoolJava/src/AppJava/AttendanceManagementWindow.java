@@ -266,7 +266,7 @@ public class AttendanceManagementWindow extends JFrame {
 		// Panel przycisków
 		JPanel buttonPanel = new JPanel();
 		buttonPanel.setLayout(new FlowLayout(FlowLayout.RIGHT));
-
+		
 		// Przycisk zapisu zmian
 		JButton saveButton = new JButton("Save");
 		saveButton.addActionListener(new ActionListener() {
