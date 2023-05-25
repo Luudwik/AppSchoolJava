@@ -15,6 +15,7 @@ import java.sql.ResultSet;
 import java.sql.SQLException;
 
 import javax.swing.BorderFactory;
+import javax.swing.BoxLayout;
 import javax.swing.ImageIcon;
 import javax.swing.JButton;
 import javax.swing.JComboBox;
@@ -22,10 +23,12 @@ import javax.swing.JFrame;
 import javax.swing.JLabel;
 import javax.swing.JOptionPane;
 import javax.swing.JPanel;
+import javax.swing.JScrollPane;
+import javax.swing.JTable;
 import javax.swing.SwingConstants;
 import javax.swing.border.EmptyBorder;
 import java.awt.Image;
-
+import java.awt.LayoutManager;
 import java.awt.BorderLayout;
 import java.awt.FlowLayout;
 
@@ -35,12 +38,33 @@ public class MainWindow extends JFrame {
 	JPanel contentPane;
 	private static DbConn dbConn = new DbConn();
 	private static int teacherId;
+	private String teacherName;
 	
 	public MainWindow(int teacherId) {
 		MainWindow.teacherId = teacherId;
 		System.out.println(teacherId);
 	}
 
+	
+	public String find_teacherName()
+	{
+	try {
+		Connection con = dbConn.Connect();
+		PreparedStatement pst = con.prepareStatement(
+				"SELECT name FROM Teachers WHERE id = ?");
+		pst.setInt(1, teacherId);
+		ResultSet rs = pst.executeQuery();
+		while (rs.next()) {
+			teacherName = rs.getString("name");
+		}
+		
+	} catch (SQLException e) {
+		JOptionPane.showMessageDialog(null, "Wystąpił błąd podczas połączenia z bazą danych:\n" + e.getMessage());
+	} catch (ClassNotFoundException e1) {
+		e1.printStackTrace();
+	}		
+	return teacherName;
+	}
 	
 	/**
 	 * Launch the application.
@@ -111,63 +135,47 @@ public class MainWindow extends JFrame {
 		
 		
 		JPanel panel_2 = new JPanel();
-		contentPane.add(panel_2, BorderLayout.CENTER);
+		panel_2.setLayout((LayoutManager) new BoxLayout(panel_2, BoxLayout.X_AXIS));
+		contentPane.add(panel_2, BorderLayout.SOUTH);
 		panel_2.setBackground(new Color(224, 255, 255));
-		panel_2.setLayout(new BorderLayout(0, 0));
-		panel_2.setBorder(BorderFactory.createEmptyBorder(0, 10, 0, 10));
+		panel_2.setBorder(BorderFactory.createEmptyBorder(0, 25, 30, 25));
 
-		
-		
-		JLabel lblNewLabel = new JLabel("Witaj ");
+		JLabel lblNewLabel = new JLabel("Witaj " + teacherName);
 		lblNewLabel.setHorizontalAlignment(SwingConstants.CENTER);
 		lblNewLabel.setFont(new Font("Bodoni MT Condensed", Font.BOLD | Font.ITALIC, (int) (getWidth() * 0.03)));
+		lblNewLabel.setBackground(new Color(224, 255, 255));
 
-		// Panel z odstępem od lewej i prawej krawędzi
-		JPanel leftPanel = new JPanel(new BorderLayout());
-		//leftPanel.setBorder(BorderFactory.createEmptyBorder(0, 10, 0, 10));
-		leftPanel.add(lblNewLabel, BorderLayout.CENTER);
+		// Panel na lewo
+		JPanel leftPanel = new JPanel(new FlowLayout(FlowLayout.LEFT));
+		leftPanel.setBackground(new Color(224, 255, 255));
+		leftPanel.add(lblNewLabel);
 
-		panel_2.add(leftPanel, BorderLayout.WEST);
+		panel_2.add(leftPanel);
 
 		// Panel na prawo
-		JPanel rightPanel = new JPanel(new BorderLayout());
-		//rightPanel.setBorder(BorderFactory.createEmptyBorder(0, 10, 0, 10));
+		JPanel rightPanel = new JPanel(new FlowLayout(FlowLayout.RIGHT));
+		rightPanel.setBackground(new Color(224, 255, 255));
 
-		JLabel secondLabel = new JLabel("Select subject");
+		JLabel secondLabel = new JLabel("Select subject: ");
 		secondLabel.setFont(new Font("Bodoni MT Condensed", Font.BOLD | Font.ITALIC, (int) (getWidth() * 0.03)));
-		rightPanel.add(secondLabel, BorderLayout.WEST);
+		rightPanel.add(secondLabel);
 
 		JComboBox<String> comboBox = new JComboBox<>();
+		comboBox.setPreferredSize(new Dimension(150, lblNewLabel.getPreferredSize().height));
 		// Dodaj elementy do JComboBox
-		rightPanel.add(comboBox, BorderLayout.CENTER);
+		rightPanel.add(comboBox);
 
-		panel_2.add(rightPanel, BorderLayout.EAST);
-
-		
-		try {
-		Connection con = dbConn.Connect();
-		PreparedStatement pst = con.prepareStatement("SELECT number FROM Class");
-		ResultSet rs = pst.executeQuery();
-		while (rs.next()) {
-			String imie = rs.getString("number");
-			//lblNewLabel.addItem(imie);
-		}		
-
-	} catch (SQLException e) {
-		JOptionPane.showMessageDialog(null, "Wystąpił błąd podczas połączenia z bazą danych:\n" + e.getMessage());
-	} catch (ClassNotFoundException e1) {
-		e1.printStackTrace();
-	}
-		
+		panel_2.add(rightPanel);
 		
 		
 		
 		
 		JPanel panel_1 = new JPanel();
-		contentPane.add(panel_1, BorderLayout.SOUTH);
+		contentPane.add(panel_1, BorderLayout.CENTER);
 		panel_1.setBackground(new Color(224, 255, 255));
 		FlowLayout flowLayout = new FlowLayout(FlowLayout.CENTER, 50, 50); // Tworzenie FlowLayout z odstępem między przyciskami
 		panel_1.setLayout(flowLayout);
+		panel_1.setBorder(BorderFactory.createEmptyBorder(50, 0, 0, 0));
 		
 		JButton btnManageStudents = new JButton();
 		ImageIcon img_student_btn = new ImageIcon(MainWindow.class.getClassLoader().getResource("icon/icon-student_btn.png"));
@@ -372,6 +380,9 @@ public class MainWindow extends JFrame {
 
 		panel_1.add(buttonCreateTestWithLabelPanel);
 		
+		
+		//panel_3.add(panel_2);
+		//panel_3.add(panel_1);
 		
 		
 		
