@@ -173,12 +173,13 @@ public class MainWindow extends JFrame {
 		JPanel panel_1 = new JPanel();
 		contentPane.add(panel_1, BorderLayout.CENTER);
 		panel_1.setBackground(new Color(224, 255, 255));
-		FlowLayout flowLayout = new FlowLayout(FlowLayout.CENTER, 50, 50); // Tworzenie FlowLayout z odstępem między przyciskami
+		FlowLayout flowLayout = new FlowLayout(FlowLayout.CENTER, 50, 50);
 		panel_1.setLayout(flowLayout);
 		panel_1.setBorder(BorderFactory.createEmptyBorder(50, 0, 0, 0));
 		
 		JButton btnManageStudents = new JButton();
-		ImageIcon img_student_btn = new ImageIcon(MainWindow.class.getClassLoader().getResource("icon/icon-student_btn.png"));
+		ImageIcon img_student_btn = new ImageIcon(MainWindow.class.getClassLoader().getResource
+				("icon/icon-student_btn.png"));
 		Image img_icon_student_btn = img_student_btn.getImage();
 		Image scaledImg_student_btn = img_icon_student_btn.getScaledInstance(300, 300, Image.SCALE_SMOOTH);
 		ImageIcon scaledIcon_img_student_btn = new ImageIcon(scaledImg_student_btn);
@@ -197,8 +198,6 @@ public class MainWindow extends JFrame {
 				}
 			}
 		});
-		//panel_1.setLayout(new FlowLayout(FlowLayout.CENTER, 5, 5));
-		//panel_1.add(btnManageStudents);
 		
 		JButton btnManageAttendance = new JButton();
 		
