@@ -15,6 +15,7 @@ import java.util.Vector;
 import org.jdatepicker.JDateComponentFactory;
 import org.jdatepicker.JDatePicker;
 import java.util.Date;
+import javax.swing.plaf.basic.BasicScrollBarUI;
 
 public class AttendanceManagementWindow extends JFrame {
 
@@ -34,7 +35,6 @@ public class AttendanceManagementWindow extends JFrame {
 	}
 
 	public static void main(String[] args) {
-		// int teacherId = 0;
 		EventQueue.invokeLater(new Runnable() {
 			public void run() {
 				try {
@@ -58,18 +58,42 @@ public class AttendanceManagementWindow extends JFrame {
 		contentPane = new JPanel();
 		contentPane.setBorder(new EmptyBorder(5, 5, 5, 5));
 		contentPane.setLayout(new BorderLayout(0, 0));
+		contentPane.setBackground(new Color(40, 44, 52)); // Ustawienie koloru tła
 		setContentPane(contentPane);
 
 		JScrollPane scrollPane = new JScrollPane();
+		scrollPane.getVerticalScrollBar().setBackground(new Color(61, 64, 71)); // Ustawienie koloru paska przewijania
+		scrollPane.getVerticalScrollBar().setUI(new BasicScrollBarUI() {
+			@Override
+			protected void configureScrollBarColors() {
+				this.thumbColor = new Color(61, 64, 71); // Ustawienie koloru kciuka paska przewijania
+			}
+		});
 		contentPane.add(scrollPane, BorderLayout.CENTER);
 
 		table = new JTable();
+		table.setBackground(new Color(61, 64, 71)); // Ustawienie koloru tła tabeli
+		table.setForeground(Color.WHITE); // Ustawienie koloru czcionki tabeli
+		table.setSelectionBackground(new Color(92, 107, 192)); // Ustawienie koloru zaznaczenia w tabeli
+		table.setSelectionForeground(Color.WHITE); // Ustawienie koloru czcionki zaznaczenia w tabeli
+		table.getTableHeader().setBackground(new Color(61, 64, 71)); // Ustawienie koloru tła nagłówka tabeli
+		table.getTableHeader().setForeground(Color.WHITE); // Ustawienie koloru czcionki nagłówka tabeli
+		table.getTableHeader().setFont(table.getTableHeader().getFont().deriveFont(Font.BOLD)); // Ustawienie
+																								// pogrubionej czcionki
+																								// nagłówka tabeli
+		table.setGridColor(new Color(128, 128, 128)); // Ustawienie koloru linii siatki międzykomórkowej
+		table.setFont(new Font("Tahoma", Font.PLAIN, 12)); // Ustawienie czcionki w tabeli
+
 		scrollPane.setViewportView(table);
 
 		JPanel buttonPanel = new JPanel();
+		buttonPanel.setBackground(new Color(40, 44, 52)); // Ustawienie koloru tła panelu przycisków
 		contentPane.add(buttonPanel, BorderLayout.SOUTH);
 
 		JButton addButton = new JButton("Add");
+		addButton.setBackground(new Color(92, 107, 192)); // Ustawienie koloru tła przycisku
+		addButton.setForeground(Color.WHITE); // Ustawienie koloru czcionki przycisku
+		addButton.setFont(new Font("Tahoma", Font.PLAIN, 12)); // Ustawienie czcionki przycisku
 		addButton.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
 				try {
@@ -84,6 +108,9 @@ public class AttendanceManagementWindow extends JFrame {
 		buttonPanel.add(addButton);
 
 		JButton editButton = new JButton("Edit");
+		editButton.setBackground(new Color(92, 107, 192));
+		editButton.setForeground(Color.WHITE);
+		editButton.setFont(new Font("Tahoma", Font.PLAIN, 12));
 		editButton.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
 				showEditAttendanceDialog();
@@ -92,6 +119,9 @@ public class AttendanceManagementWindow extends JFrame {
 		buttonPanel.add(editButton);
 
 		JButton deleteButton = new JButton("Delete");
+		deleteButton.setBackground(new Color(92, 107, 192));
+		deleteButton.setForeground(Color.WHITE);
+		deleteButton.setFont(new Font("Tahoma", Font.PLAIN, 12));
 		deleteButton.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
 				deleteSelectedAttendance();
@@ -100,6 +130,9 @@ public class AttendanceManagementWindow extends JFrame {
 		buttonPanel.add(deleteButton);
 
 		subjectComboBox = new JComboBox<>();
+		subjectComboBox.setBackground(new Color(92, 107, 192));
+		subjectComboBox.setForeground(Color.WHITE);
+		subjectComboBox.setFont(new Font("Tahoma", Font.PLAIN, 12));
 		subjectComboBox.addActionListener(new ActionListener() {
 			@Override
 			public void actionPerformed(ActionEvent e) {
@@ -113,12 +146,18 @@ public class AttendanceManagementWindow extends JFrame {
 		buttonPanel.add(subjectComboBox);
 
 		JPanel datePanel = new JPanel();
+		datePanel.setBackground(new Color(40, 44, 52));
 		datePicker = new JDateComponentFactory().createJDatePicker();
-		datePanel.add(new JLabel("Date:"));
+		JLabel dateLabel = new JLabel("Date:");
+		dateLabel.setForeground(Color.WHITE);
+		datePanel.add(dateLabel);
 		datePanel.add((Component) datePicker);
 		buttonPanel.add(datePanel);
 
 		JButton refreshButton = new JButton("Refresh");
+		refreshButton.setBackground(new Color(92, 107, 192));
+		refreshButton.setForeground(Color.WHITE);
+		refreshButton.setFont(new Font("Tahoma", Font.PLAIN, 12));
 		refreshButton.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
 				try {
@@ -128,7 +167,6 @@ public class AttendanceManagementWindow extends JFrame {
 				} catch (ClassNotFoundException e1) {
 					e1.printStackTrace();
 				} catch (SQLException e1) {
-					// TODO Auto-generated catch block
 					e1.printStackTrace();
 				}
 			}
@@ -136,6 +174,9 @@ public class AttendanceManagementWindow extends JFrame {
 		buttonPanel.add(refreshButton);
 
 		JButton backButton = new JButton("Back to menu");
+		backButton.setBackground(new Color(92, 107, 192));
+		backButton.setForeground(Color.WHITE);
+		backButton.setFont(new Font("Tahoma", Font.PLAIN, 12));
 		backButton.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
 				dispose();
@@ -143,7 +184,6 @@ public class AttendanceManagementWindow extends JFrame {
 				try {
 					mainWindow = new MainWindow();
 				} catch (ClassNotFoundException | SQLException e1) {
-					// TODO Auto-generated catch block
 					e1.printStackTrace();
 				}
 				mainWindow.setVisible(true);
@@ -218,14 +258,12 @@ public class AttendanceManagementWindow extends JFrame {
 	}
 
 	private void showEditAttendanceDialog() {
-		// Sprawdź, czy został wybrany rekord do edycji
 		int selectedRow = table.getSelectedRow();
 		if (selectedRow == -1) {
 			JOptionPane.showMessageDialog(this, "No attendance record selected.", "Error", JOptionPane.ERROR_MESSAGE);
 			return;
 		}
 
-		// Pobierz dane z wybranego rekordu
 		int attendanceId = (int) table.getValueAt(selectedRow, 0);
 		String teacherName = (String) table.getValueAt(selectedRow, 1);
 		String studentName = (String) table.getValueAt(selectedRow, 2);
@@ -234,46 +272,51 @@ public class AttendanceManagementWindow extends JFrame {
 		String presenceText = (String) table.getValueAt(selectedRow, 5);
 		boolean isPresent = presenceText.equals("Obecny");
 
-		// Tworzenie okna dialogowego
 		JDialog dialog = new JDialog(this, "Edit Attendance", true);
 		dialog.setSize(300, 310);
 		dialog.setDefaultCloseOperation(JDialog.DISPOSE_ON_CLOSE);
 		dialog.setLocationRelativeTo(this);
+		dialog.getContentPane().setBackground(new Color(40, 44, 52)); // Ustawienie koloru tła dialogu
 
-		// Panel główny
 		JPanel mainPanel = new JPanel();
 		mainPanel.setLayout(new BoxLayout(mainPanel, BoxLayout.Y_AXIS));
 		mainPanel.setBorder(new EmptyBorder(10, 10, 10, 10));
+		mainPanel.setBackground(new Color(40, 44, 52)); // Ustawienie koloru tła panelu głównego
 
-		// Panel danych rekordu
 		JPanel dataPanel = new JPanel(new GridLayout(5, 2, 10, 10));
+		dataPanel.setBackground(new Color(40, 44, 52)); // Ustawienie koloru tła panelu danych rekordu
 
-		// Tworzenie elementów formularza
 		JLabel teacherLabel = new JLabel("Teacher:");
+		teacherLabel.setForeground(Color.WHITE); // Ustawienie koloru czcionki
 		JTextField teacherField = new JTextField(teacherName);
 		teacherField.setEditable(false);
 
 		JLabel studentLabel = new JLabel("Student:");
+		studentLabel.setForeground(Color.WHITE);
 		JTextField studentField = new JTextField(studentName);
 		studentField.setEditable(false);
 
 		JLabel subjectLabel = new JLabel("Subject:");
+		subjectLabel.setForeground(Color.WHITE);
 		JTextField subjectField = new JTextField(subjectName);
 		subjectField.setEditable(false);
 
 		JLabel dateLabel = new JLabel("Date:");
+		dateLabel.setForeground(Color.WHITE);
 		JTextField dateField = new JTextField(dateString);
 		dateField.setEditable(false);
 
 		JLabel presenceLabel = new JLabel("Presence:");
+		presenceLabel.setForeground(Color.WHITE);
 		JComboBox<String> presenceComboBox = new JComboBox<>();
+		presenceComboBox.setBackground(new Color(92, 107, 192));
+		presenceComboBox.setForeground(Color.WHITE);
 		presenceComboBox.addItem("Obecny");
 		presenceComboBox.addItem("Nieobecny");
 		presenceComboBox.addItem("Spóźnienie");
 		presenceComboBox.addItem("Usprawiedliwiono");
 		presenceComboBox.setSelectedItem(presenceText);
 
-		// Dodawanie elementów do panelu danych rekordu
 		dataPanel.add(teacherLabel);
 		dataPanel.add(teacherField);
 		dataPanel.add(studentLabel);
@@ -285,16 +328,16 @@ public class AttendanceManagementWindow extends JFrame {
 		dataPanel.add(presenceLabel);
 		dataPanel.add(presenceComboBox);
 
-		// Panel przycisków
 		JPanel buttonPanel = new JPanel();
 		buttonPanel.setLayout(new FlowLayout(FlowLayout.RIGHT));
-		
-		// Przycisk zapisu zmian
+		buttonPanel.setBackground(new Color(40, 44, 52)); // Ustawienie koloru tła panelu przycisków
+
 		JButton saveButton = new JButton("Save");
+		saveButton.setBackground(new Color(92, 107, 192));
+		saveButton.setForeground(Color.WHITE);
 		saveButton.addActionListener(new ActionListener() {
 			@Override
 			public void actionPerformed(ActionEvent e) {
-				// Pobierz zmienione dane z formularza
 				String updatedPresence = (String) presenceComboBox.getSelectedItem();
 
 				try {
@@ -319,7 +362,10 @@ public class AttendanceManagementWindow extends JFrame {
 				}
 			}
 		});
+
 		JButton cancelButton = new JButton("Cancel");
+		cancelButton.setBackground(new Color(92, 107, 192));
+		cancelButton.setForeground(Color.WHITE);
 		cancelButton.addActionListener(new ActionListener() {
 			@Override
 			public void actionPerformed(ActionEvent e) {
@@ -443,11 +489,9 @@ public class AttendanceManagementWindow extends JFrame {
 		statement.close();
 		connection.close();
 
-		refreshTableData();
 	}
 
 	private void showAddAttendanceDialog() throws ClassNotFoundException, SQLException {
-
 		studentComboBox = new JComboBox<>();
 		subjectComboBox = new JComboBox<>();
 		subjectComboBox.addActionListener(new ActionListener() {
@@ -460,6 +504,7 @@ public class AttendanceManagementWindow extends JFrame {
 				}
 			}
 		});
+
 		JComboBox<String> presenceComboBox = new JComboBox<>();
 		JDatePicker datePicker = new JDateComponentFactory().createJDatePicker();
 
@@ -474,74 +519,131 @@ public class AttendanceManagementWindow extends JFrame {
 		datePicker.setShowYearButtons(true);
 
 		JPanel panel = new JPanel(new BorderLayout(10, 10));
+		panel.setBackground(new Color(40, 44, 52)); // Ustawienie koloru tła panelu głównego
 
 		JPanel inputPanel = new JPanel(new GridLayout(5, 2, 10, 10));
 		inputPanel.setBorder(BorderFactory.createEmptyBorder(10, 10, 10, 10));
+		inputPanel.setBackground(new Color(40, 44, 52)); // Ustawienie koloru tła panelu danych wejściowych
 
-		inputPanel.add(new JLabel("Student:"));
+		JLabel studentLabel = new JLabel("Student:");
+		studentLabel.setForeground(Color.WHITE); // Ustawienie koloru czcionki
+		inputPanel.add(studentLabel);
 		inputPanel.add(studentComboBox);
+		studentComboBox.setBackground(new Color(92, 107, 192));
+		studentComboBox.setForeground(Color.WHITE);
 
-		inputPanel.add(new JLabel("Subject:"));
+		JLabel subjectLabel = new JLabel("Subject:");
+		subjectLabel.setForeground(Color.WHITE);
+		inputPanel.add(subjectLabel);
 		inputPanel.add(subjectComboBox);
+		subjectComboBox.setBackground(new Color(92, 107, 192));
+		subjectComboBox.setForeground(Color.WHITE);
 
-		inputPanel.add(new JLabel("Date:"));
+		JLabel dateLabel = new JLabel("Date:");
+		dateLabel.setForeground(Color.WHITE);
+		inputPanel.add(dateLabel);
 		inputPanel.add((Component) datePicker);
 
-		inputPanel.add(new JLabel("Presence:"));
+		JLabel presenceLabel = new JLabel("Presence:");
+		presenceLabel.setForeground(Color.WHITE);
+		inputPanel.add(presenceLabel);
 		inputPanel.add(presenceComboBox);
+		presenceComboBox.setBackground(new Color(92, 107, 192));
+		presenceComboBox.setForeground(Color.WHITE);
 
 		panel.add(inputPanel, BorderLayout.CENTER);
+		JDialog dialog = new JDialog();
 
-		int option = JOptionPane.showConfirmDialog(null, panel, "Add Attendance", JOptionPane.OK_CANCEL_OPTION);
+		JPanel buttonPanel = new JPanel();
+		buttonPanel.setLayout(new FlowLayout(FlowLayout.RIGHT));
+		buttonPanel.setBackground(new Color(40, 44, 52)); // Ustawienie koloru tła panelu przycisków
 
-		if (option == JOptionPane.OK_OPTION) {
-			String selectedStudent = (String) studentComboBox.getSelectedItem();
-			String subjectName = (String) subjectComboBox.getSelectedItem();
-			java.util.Date selectedDate = ((java.util.GregorianCalendar) datePicker.getModel().getValue()).getTime();
-			String presenceText = (String) presenceComboBox.getSelectedItem();
-			int presence;
+		JButton saveButton = new JButton("Save");
+		saveButton.setBackground(new Color(92, 107, 192));
+		saveButton.setForeground(Color.WHITE);
+		saveButton.addActionListener(new ActionListener() {
+			@Override
+			public void actionPerformed(ActionEvent e) {
+				String selectedStudent = (String) studentComboBox.getSelectedItem();
+				String subjectName = (String) subjectComboBox.getSelectedItem();
+				java.util.Date selectedDate = ((java.util.GregorianCalendar) datePicker.getModel().getValue())
+						.getTime();
+				String presenceText = (String) presenceComboBox.getSelectedItem();
+				int presence;
 
-			if (presenceText.equals("Obecny")) {
-				presence = 1;
-			} else if (presenceText.equals("Nieobecny")) {
-				presence = 0;
-			} else if (presenceText.equals("Spóźnienie")) {
-				presence = 2;
-			} else if (presenceText.equals("Usprawiedliwiono")) {
-				presence = 3;
-			} else {
-				presence = -1;
-			}
-
-			if (presence != -1) {
-				java.sql.Date sqlDate = new java.sql.Date(selectedDate.getTime());
-
-				try {
-					Connection connection = dbConn.Connect();
-					String query = "INSERT INTO Attendance (id_teacher, id_student, id_subject, date, presence) "
-							+ "VALUES (?, ?, (SELECT id FROM Subjects WHERE name = ?), ?, ?)";
-					PreparedStatement statement = connection.prepareStatement(query);
-					statement.setInt(1, teacherId);
-					statement.setInt(2, studentMap.get(selectedStudent)); // Użyj mapy do pobrania ID studenta
-					statement.setString(3, subjectName);
-					statement.setDate(4, sqlDate);
-					statement.setInt(5, presence);
-					statement.executeUpdate();
-
-					statement.close();
-					connection.close();
-				} catch (SQLException e) {
-					e.printStackTrace();
+				if (presenceText.equals("Obecny")) {
+					presence = 1;
+				} else if (presenceText.equals("Nieobecny")) {
+					presence = 0;
+				} else if (presenceText.equals("Spóźnienie")) {
+					presence = 2;
+				} else if (presenceText.equals("Usprawiedliwiono")) {
+					presence = 3;
+				} else {
+					presence = -1;
 				}
 
-				studentComboBox.setSelectedItem(selectedStudent);
-				refreshTableData();
+				if (presence != -1) {
+					java.sql.Date sqlDate = new java.sql.Date(selectedDate.getTime());
 
-			} else {
-				JOptionPane.showMessageDialog(null, "Invalid presence value selected.", "Error",
-						JOptionPane.ERROR_MESSAGE);
+					try {
+						Connection connection = dbConn.Connect();
+						String query = "INSERT INTO Attendance (id_teacher, id_student, id_subject, date, presence) "
+								+ "VALUES (?, ?, (SELECT id FROM Subjects WHERE name = ?), ?, ?)";
+						PreparedStatement statement = connection.prepareStatement(query);
+						statement.setInt(1, teacherId);
+						statement.setInt(2, studentMap.get(selectedStudent)); // Użyj mapy do pobrania ID studenta
+						statement.setString(3, subjectName);
+						statement.setDate(4, sqlDate);
+						statement.setInt(5, presence);
+						statement.executeUpdate();
+
+						statement.close();
+						connection.close();
+					} catch (SQLException ex) {
+						ex.printStackTrace();
+					} catch (ClassNotFoundException e1) {
+						// TODO Auto-generated catch block
+						e1.printStackTrace();
+					}
+
+					studentComboBox.setSelectedItem(selectedStudent);
+					try {
+						refreshTableData();
+					} catch (ClassNotFoundException e1) {
+						// TODO Auto-generated catch block
+						e1.printStackTrace();
+					}
+
+				} else {
+					JOptionPane.showMessageDialog(null, "Invalid presence value selected.", "Error",
+							JOptionPane.ERROR_MESSAGE);
+				}
+				dialog.dispose();
 			}
-		}
+		});
+
+		JButton cancelButton = new JButton("Cancel");
+		cancelButton.setBackground(new Color(92, 107, 192));
+		cancelButton.setForeground(Color.WHITE);
+		cancelButton.addActionListener(new ActionListener() {
+			@Override
+			public void actionPerformed(ActionEvent e) {
+				dialog.dispose();
+			}
+		});
+
+		buttonPanel.add(saveButton);
+		buttonPanel.add(cancelButton);
+
+		panel.add(buttonPanel, BorderLayout.SOUTH);
+
+		dialog.setTitle("Add Attendance");
+		dialog.setContentPane(panel);
+		dialog.pack();
+		dialog.setModal(true);
+		dialog.setLocationRelativeTo(null);
+		dialog.setVisible(true);
 	}
 
 	private Map<String, Integer> loadStudents() throws SQLException, ClassNotFoundException {

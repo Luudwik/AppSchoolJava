@@ -167,9 +167,6 @@ public class MainWindow extends JFrame {
 
 		panel_2.add(rightPanel);
 		
-		
-		
-		
 		JPanel panel_1 = new JPanel();
 		contentPane.add(panel_1, BorderLayout.CENTER);
 		panel_1.setBackground(new Color(224, 255, 255));
