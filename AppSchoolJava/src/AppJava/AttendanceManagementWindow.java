@@ -8,11 +8,13 @@ import java.awt.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.sql.*;
+import java.util.GregorianCalendar;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.Vector;
 import org.jdatepicker.JDateComponentFactory;
 import org.jdatepicker.JDatePicker;
+import java.util.Date;
 
 public class AttendanceManagementWindow extends JFrame {
 
@@ -24,6 +26,7 @@ public class AttendanceManagementWindow extends JFrame {
 	private JComboBox<String> subjectComboBox;
 	private static JComboBox<String> studentComboBox;
 	Map<String, Integer> studentMap = new HashMap<>();
+	private JDatePicker datePicker;
 
 	public AttendanceManagementWindow(int teacherId) {
 		AttendanceManagementWindow.teacherId = teacherId;
@@ -31,7 +34,7 @@ public class AttendanceManagementWindow extends JFrame {
 	}
 
 	public static void main(String[] args) {
-		//int teacherId = 0;
+		// int teacherId = 0;
 		EventQueue.invokeLater(new Runnable() {
 			public void run() {
 				try {
@@ -49,7 +52,7 @@ public class AttendanceManagementWindow extends JFrame {
 		dbConn.Connect();
 
 		setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
-		setBounds(100, 100, 800, 600);
+		setBounds(100, 100, 1000, 600);
 		setTitle("Attendance Management");
 
 		contentPane = new JPanel();
@@ -65,23 +68,6 @@ public class AttendanceManagementWindow extends JFrame {
 
 		JPanel buttonPanel = new JPanel();
 		contentPane.add(buttonPanel, BorderLayout.SOUTH);
-
-		JButton refreshButton = new JButton("Refresh");
-		refreshButton.addActionListener(new ActionListener() {
-			public void actionPerformed(ActionEvent e) {
-				try {
-					subjectComboBox.removeAllItems();
-					loadSubjects();
-					refreshTableData();
-				} catch (ClassNotFoundException e1) {
-					e1.printStackTrace();
-				} catch (SQLException e1) {
-					// TODO Auto-generated catch block
-					e1.printStackTrace();
-				}
-			}
-		});
-		buttonPanel.add(refreshButton);
 
 		JButton addButton = new JButton("Add");
 		addButton.addActionListener(new ActionListener() {
@@ -126,6 +112,29 @@ public class AttendanceManagementWindow extends JFrame {
 		});
 		buttonPanel.add(subjectComboBox);
 
+		JPanel datePanel = new JPanel();
+		datePicker = new JDateComponentFactory().createJDatePicker();
+		datePanel.add(new JLabel("Date:"));
+		datePanel.add((Component) datePicker);
+		buttonPanel.add(datePanel);
+
+		JButton refreshButton = new JButton("Refresh");
+		refreshButton.addActionListener(new ActionListener() {
+			public void actionPerformed(ActionEvent e) {
+				try {
+					subjectComboBox.removeAllItems();
+					loadSubjects();
+					refreshTableData();
+				} catch (ClassNotFoundException e1) {
+					e1.printStackTrace();
+				} catch (SQLException e1) {
+					// TODO Auto-generated catch block
+					e1.printStackTrace();
+				}
+			}
+		});
+		buttonPanel.add(refreshButton);
+
 		JButton backButton = new JButton("Back to menu");
 		backButton.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
@@ -161,6 +170,14 @@ public class AttendanceManagementWindow extends JFrame {
 
 		refreshTableData();
 		loadSubjects();
+	}
+
+	private Date getSelectedDate() {
+		if (datePicker.getModel().getValue() != null) {
+			return (Date) ((GregorianCalendar) datePicker.getModel().getValue()).getTime();
+		} else {
+			return null;
+		}
 	}
 
 	private void deleteSelectedAttendance() {
@@ -249,7 +266,12 @@ public class AttendanceManagementWindow extends JFrame {
 		dateField.setEditable(false);
 
 		JLabel presenceLabel = new JLabel("Presence:");
-		JCheckBox presenceCheckBox = new JCheckBox("Present", isPresent);
+		JComboBox<String> presenceComboBox = new JComboBox<>();
+		presenceComboBox.addItem("Obecny");
+		presenceComboBox.addItem("Nieobecny");
+		presenceComboBox.addItem("Spóźnienie");
+		presenceComboBox.addItem("Usprawiedliwiono");
+		presenceComboBox.setSelectedItem(presenceText);
 
 		// Dodawanie elementów do panelu danych rekordu
 		dataPanel.add(teacherLabel);
@@ -261,7 +283,7 @@ public class AttendanceManagementWindow extends JFrame {
 		dataPanel.add(dateLabel);
 		dataPanel.add(dateField);
 		dataPanel.add(presenceLabel);
-		dataPanel.add(presenceCheckBox);
+		dataPanel.add(presenceComboBox);
 
 		// Panel przycisków
 		JPanel buttonPanel = new JPanel();
@@ -273,29 +295,26 @@ public class AttendanceManagementWindow extends JFrame {
 			@Override
 			public void actionPerformed(ActionEvent e) {
 				// Pobierz zmienione dane z formularza
-				boolean updatedPresence = presenceCheckBox.isSelected();
+				String updatedPresence = (String) presenceComboBox.getSelectedItem();
 
 				try {
 					Connection connection = dbConn.Connect();
 					String query = "UPDATE Attendance SET presence = ? WHERE id = ?";
 					PreparedStatement statement = connection.prepareStatement(query);
-					statement.setInt(1, updatedPresence ? 1 : 0);
+					int presenceValue = getPresenceValue(updatedPresence);
+					statement.setInt(1, presenceValue);
 					statement.setInt(2, attendanceId);
 					statement.executeUpdate();
 					statement.close();
 					connection.close();
 
-					table.setValueAt(updatedPresence ? "Obecny" : "Nieobecny", selectedRow, 5);
-					// JOptionPane.showMessageDialog(dialog, "Attendance record updated
-					// successfully.", "Success", JOptionPane.INFORMATION_MESSAGE);
+					table.setValueAt(updatedPresence, selectedRow, 5);
 					dialog.dispose();
-
 				} catch (SQLException ex) {
 					ex.printStackTrace();
 					JOptionPane.showMessageDialog(dialog, "Failed to update attendance record.", "Error",
 							JOptionPane.ERROR_MESSAGE);
 				} catch (ClassNotFoundException e1) {
-					// TODO Auto-generated catch block
 					e1.printStackTrace();
 				}
 			}
@@ -319,10 +338,24 @@ public class AttendanceManagementWindow extends JFrame {
 		dialog.setVisible(true);
 	}
 
+	private int getPresenceValue(String presenceText) {
+		if (presenceText.equals("Obecny")) {
+			return 1;
+		} else if (presenceText.equals("Nieobecny")) {
+			return 0;
+		} else if (presenceText.equals("Spóźnienie")) {
+			return 2;
+		} else if (presenceText.equals("Usprawiedliwiono")) {
+			return 3;
+		}
+		return -1; // Wartość domyślna w przypadku nieznanej opcji
+	}
+
 	private void refreshTableData() throws ClassNotFoundException {
 		System.out.println("Refreshing table data...");
 		try {
 			String selectedSubject = (String) subjectComboBox.getSelectedItem();
+			Date selectedDate = getSelectedDate();
 			System.out.println("Selected Subject: " + selectedSubject);
 			if (selectedSubject == null) {
 				tableModel.setRowCount(0);
@@ -335,9 +368,16 @@ public class AttendanceManagementWindow extends JFrame {
 					+ "A.date, A.presence " + "FROM Attendance A " + "JOIN Teachers T ON A.id_teacher = T.id "
 					+ "JOIN Students S ON A.id_student = S.id " + "JOIN Subjects SB ON A.id_subject = SB.id "
 					+ "WHERE SB.name = ? AND A.id_teacher = ?";
+
+			if (selectedDate != null) {
+				query += " AND A.date = ?";
+			}
 			PreparedStatement statement = connection.prepareStatement(query);
 			statement.setString(1, selectedSubject);
 			statement.setInt(2, teacherId);
+			if (selectedDate != null) {
+				statement.setDate(3, new java.sql.Date(selectedDate.getTime()));
+			}
 			ResultSet resultSet = statement.executeQuery();
 
 			tableModel.setRowCount(0);
@@ -350,7 +390,18 @@ public class AttendanceManagementWindow extends JFrame {
 				String date = resultSet.getString("date");
 				int presence = resultSet.getInt("presence");
 
-				String presenceText = presence == 1 ? "Obecny" : "Nieobecny";
+				String presenceText;
+				if (presence == 1) {
+					presenceText = "Obecny";
+				} else if (presence == 0) {
+					presenceText = "Nieobecny";
+				} else if (presence == 2) {
+					presenceText = "Spóźnienie";
+				} else if (presence == 3) {
+					presenceText = "Usprawiedliwiono";
+				} else {
+					presenceText = "Nieznany";
+				}
 
 				Vector<Object> row = new Vector<>();
 				row.add(id);
@@ -417,6 +468,8 @@ public class AttendanceManagementWindow extends JFrame {
 
 		presenceComboBox.addItem("Obecny");
 		presenceComboBox.addItem("Nieobecny");
+		presenceComboBox.addItem("Spóźnienie");
+		presenceComboBox.addItem("Usprawiedliwiono");
 
 		datePicker.setShowYearButtons(true);
 
@@ -446,30 +499,48 @@ public class AttendanceManagementWindow extends JFrame {
 			String subjectName = (String) subjectComboBox.getSelectedItem();
 			java.util.Date selectedDate = ((java.util.GregorianCalendar) datePicker.getModel().getValue()).getTime();
 			String presenceText = (String) presenceComboBox.getSelectedItem();
-			int presence = presenceText.equals("Obecny") ? 1 : 0;
+			int presence;
 
-			java.sql.Date sqlDate = new java.sql.Date(selectedDate.getTime());
-
-			try {
-				Connection connection = dbConn.Connect();
-				String query = "INSERT INTO Attendance (id_teacher, id_student, id_subject, date, presence) "
-						+ "VALUES (?, ?, (SELECT id FROM Subjects WHERE name = ?), ?, ?)";
-				PreparedStatement statement = connection.prepareStatement(query);
-				statement.setInt(1, teacherId);
-				statement.setInt(2, studentMap.get(selectedStudent)); // Użyj mapy do pobrania ID studenta
-				statement.setString(3, subjectName);
-				statement.setDate(4, sqlDate);
-				statement.setInt(5, presence);
-				statement.executeUpdate();
-
-				statement.close();
-				connection.close();
-			} catch (SQLException e) {
-				e.printStackTrace();
+			if (presenceText.equals("Obecny")) {
+				presence = 1;
+			} else if (presenceText.equals("Nieobecny")) {
+				presence = 0;
+			} else if (presenceText.equals("Spóźnienie")) {
+				presence = 2;
+			} else if (presenceText.equals("Usprawiedliwiono")) {
+				presence = 3;
+			} else {
+				presence = -1;
 			}
-			studentComboBox.setSelectedItem(selectedStudent);
-			
-			refreshTableData();
+
+			if (presence != -1) {
+				java.sql.Date sqlDate = new java.sql.Date(selectedDate.getTime());
+
+				try {
+					Connection connection = dbConn.Connect();
+					String query = "INSERT INTO Attendance (id_teacher, id_student, id_subject, date, presence) "
+							+ "VALUES (?, ?, (SELECT id FROM Subjects WHERE name = ?), ?, ?)";
+					PreparedStatement statement = connection.prepareStatement(query);
+					statement.setInt(1, teacherId);
+					statement.setInt(2, studentMap.get(selectedStudent)); // Użyj mapy do pobrania ID studenta
+					statement.setString(3, subjectName);
+					statement.setDate(4, sqlDate);
+					statement.setInt(5, presence);
+					statement.executeUpdate();
+
+					statement.close();
+					connection.close();
+				} catch (SQLException e) {
+					e.printStackTrace();
+				}
+
+				studentComboBox.setSelectedItem(selectedStudent);
+				refreshTableData();
+
+			} else {
+				JOptionPane.showMessageDialog(null, "Invalid presence value selected.", "Error",
+						JOptionPane.ERROR_MESSAGE);
+			}
 		}
 	}
 
