@@ -1,5 +1,6 @@
 package AppJava;
 
+import java.awt.BorderLayout;
 import java.awt.Color;
 import java.awt.EventQueue;
 import java.sql.Connection;
@@ -17,6 +18,9 @@ import javax.swing.table.JTableHeader;
 import javax.swing.table.TableCellRenderer;
 import javax.swing.JScrollPane;
 import javax.swing.JTable;
+import javax.swing.SwingConstants;
+import javax.swing.BorderFactory;
+import javax.swing.ImageIcon;
 import javax.swing.JButton;
 import java.awt.Font;
 import java.awt.event.ActionListener;
@@ -43,6 +47,7 @@ public class EditStudentsWindow extends JFrame {
 	private JPanel contentPaneNorth;
 	private JPanel contentPaneCenter;
 	private JPanel contentPaneCenterTable;
+	private DbConn dbConn = new DbConn();
 
 	/**
 	 * Launch the application.
@@ -165,7 +170,7 @@ public class EditStudentsWindow extends JFrame {
 			rs = pst.executeQuery();
 			while(rs.next())
 			{
-				tableModel.insertRow(0, new Object[] {dbConn.rs.getInt("id"), dbConn.rs.getString("name"), dbConn.rs.getString("surname"), dbConn.rs.getInt("phone"), dbConn.rs.getInt("id_class"),});
+				tableModel.insertRow(0, new Object[] {rs.getInt("id"), rs.getString("name"), rs.getString("surname"), rs.getInt("phone"), rs.getInt("id_class"),});
 
 			}
 			if(table != null) {
@@ -297,11 +302,11 @@ public class EditStudentsWindow extends JFrame {
 					 
 					String sqlID = tableModel.getValueAt(table.getSelectedRow(), 0).toString(); 
 					 
-						try { 
-							DbConn dbConn = new DbConn(); 
-							dbConn.Connect(); 
-							dbConn.pst = dbConn.con.prepareStatement("DELETE FROM `Students` WHERE `Students`.`id` = "+sqlID); 
-							dbConn.pst.execute(); 
+						try {  
+							Connection con = dbConn.Connect(); 
+							PreparedStatement pst;
+							pst = con.prepareStatement("DELETE FROM `Students` WHERE `Students`.`id` = "+sqlID); 
+							pst.execute(); 
 							 
 						} catch (Exception e1) { 
 							// TODO Auto-generated catch block 
@@ -339,9 +344,9 @@ public class EditStudentsWindow extends JFrame {
 		
 		JLabel image = new JLabel("");
 		image.setHorizontalAlignment(SwingConstants.LEFT);
-		ImageIcon originalIcon  = new ImageIcon("C:/Users/130594/Downloads/students.png");
+		Image originalIcon = new ImageIcon(getClass().getClassLoader().getResource("icon/students.png")).getImage();
 		contentPaneNorth.setLayout(new BorderLayout(0, 0));
-		image.setIcon(originalIcon );
+		image.setIcon(new ImageIcon(originalIcon));
 		image.setBorder(new EmptyBorder(0, 0, 0, 30));
 		contentPaneNorth.add(image, BorderLayout.WEST);
 		

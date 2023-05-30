@@ -126,8 +126,8 @@ public class AddStudentWindow extends JFrame {
 						Connection con =  dbConn.Connect();
 						PreparedStatement pst;
 						lblErrorText.setText("");
-						dbConn.pst = dbConn.con.prepareStatement("INSERT INTO `Students` (`id`, `name`, `surname`, `phone`, `id_class`) VALUES (NULL, '"+name+"', '"+surname+"', '"+textFieldPhone.getText()+"', '"+textFieldClass.getText()+"')");
-						dbConn.pst.execute();
+						pst = con.prepareStatement("INSERT INTO `Students` (`id`, `name`, `surname`, `phone`, `id_class`) VALUES (NULL, '"+name+"', '"+surname+"', '"+textFieldPhone.getText()+"', '"+textFieldClass.getText()+"')");
+						pst.execute();
 						dispose();
 						EditStudentsWindow editStudentsWindow = new EditStudentsWindow();
 						editStudentsWindow.setVisible(true);
