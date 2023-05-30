@@ -143,8 +143,10 @@ public class LoginUI {
 
 					if (rs.next()) {
 						Frame_log.dispose();
-						MainWindow mainWindow = new MainWindow();
-						mainWindow.setVisible(true);
+						MainWindow mainWindow = new MainWindow(id_teacher);
+						MainWindow mainWindow2 = new MainWindow();
+						mainWindow2.setVisible(true);
+						
 					} else {
 						JOptionPane.showMessageDialog(null, "Błędne logowanie.");
 					}
@@ -171,6 +173,7 @@ public class LoginUI {
 						id_teacher = rs.getInt("id");
 						AddGradesWindow addGradesWindow = new AddGradesWindow(id_teacher);
 						AttendanceManagementWindow attendanceManagementWindow = new AttendanceManagementWindow(id_teacher);
+						MainWindow mainWindow = new MainWindow(id_teacher);
 					} else {
 						JOptionPane.showMessageDialog(null, "Błędne logowanie.");
 					}

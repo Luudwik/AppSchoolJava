@@ -260,7 +260,7 @@ public class RegistrationUI {
 							pst3.executeUpdate();
 
 							Frame_rej.dispose();
-							MainWindow mainWindow = new MainWindow();
+							MainWindow mainWindow = new MainWindow(id_teacher);
 							mainWindow.setVisible(true);
 
 						}
