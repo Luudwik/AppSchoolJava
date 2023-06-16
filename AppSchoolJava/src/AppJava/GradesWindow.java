@@ -5,6 +5,8 @@ import java.awt.EventQueue;
 import java.awt.Toolkit;
 import java.awt.event.ComponentAdapter;
 import java.awt.event.ComponentEvent;
+import java.awt.event.WindowAdapter;
+import java.awt.event.WindowEvent;
 import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
@@ -178,7 +180,25 @@ public class GradesWindow extends JFrame {
 	 */
 
 	public GradesWindow() {
-		setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+		//setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+		setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
+		// Dodaj nasłuchiwacz zdarzeń do przycisku zamknięcia
+		addWindowListener(new WindowAdapter() {
+			@Override
+            public void windowClosing(WindowEvent e) {
+                // Wywołaj metodę otwierającą nowe okno
+				MainWindow mainWindow;
+				try {
+					mainWindow = new MainWindow();
+					mainWindow.setVisible(true);
+				} catch (ClassNotFoundException | SQLException e1) {
+					// TODO Auto-generated catch block
+					e1.printStackTrace();
+				}
+				
+			}
+		});
+		
 		GradesWindow = new JPanel();
 		setLocationRelativeTo(null);
 
