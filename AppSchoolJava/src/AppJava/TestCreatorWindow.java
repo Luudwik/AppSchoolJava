@@ -459,7 +459,7 @@ public class TestCreatorWindow extends JFrame {
 		JPanel contentPaneHeaderLower = new JPanel();
 		contentPaneHeaderLower.setBackground(new Color(150, 150, 150));
 		contentPaneHeader.add(contentPaneHeaderLower, BorderLayout.CENTER);
-		contentPaneHeaderLower.setLayout(new GridLayout(2, 4, 0, 0));
+		contentPaneHeaderLower.setLayout(new GridLayout(2, 5, 0, 0));
 		contentPaneHeaderLower.setBorder(BorderFactory.createMatteBorder(1, 1, 1, 1, Color.GRAY));
 
 		JLabel lblCategory = new JLabel("Kategoria");
@@ -551,6 +551,60 @@ public class TestCreatorWindow extends JFrame {
 			
 		});
 		contentPaneHeaderLowerButton.add(btnCreate);
+		
+		MyButton btnBack = new MyButton("Wróć");
+		//btnCreate.setFont(new Font("Tahoma", Font.PLAIN, 18));
+		//btnCreate.setBackground(new Color(68, 178, 218));
+		//btnCreate.setBackground(new Color(255, 255, 255));
+		//btnCreate.setBorder(new RoundedBorder(20));
+		btnBack.addActionListener(new ActionListener() {
+			public void actionPerformed(ActionEvent e) {
+				try {
+					dispose();
+					MainWindow mainWindow = new MainWindow();
+					mainWindow.setVisible(true);
+				} catch (ClassNotFoundException | SQLException e1) {
+					// TODO Auto-generated catch block
+					e1.printStackTrace();
+				}
+				
+				
+			}
+		});
+		btnBack.addMouseListener(new MouseListener() {
+
+			@Override
+			public void mouseClicked(MouseEvent e) {
+				// TODO Auto-generated method stub
+				
+			}
+
+			@Override
+			public void mousePressed(MouseEvent e) {
+				// TODO Auto-generated method stub
+				
+			}
+
+			@Override
+			public void mouseReleased(MouseEvent e) {
+				// TODO Auto-generated method stub
+				
+			}
+
+			@Override
+			public void mouseEntered(MouseEvent e) {
+				//btnCreate.setBackground(new Color(48, 158, 188));
+				
+			}
+
+			@Override
+			public void mouseExited(MouseEvent e) {
+				//btnCreate.setBackground(new Color(68, 178, 218));
+				
+			}
+			
+		});
+		contentPaneHeaderLowerButton.add(btnBack);
 
 		contentPaneBody = new JPanel();
 		contentPaneBody.setBackground(new Color(217, 238, 250));
