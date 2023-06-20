@@ -182,7 +182,7 @@ public class AttendanceManagementWindow extends JFrame {
 				dispose();
 				MainWindow mainWindow = null;
 				try {
-					mainWindow = new MainWindow();
+					mainWindow = new MainWindow(LoginUI.id_teacher);
 				} catch (ClassNotFoundException | SQLException e1) {
 					e1.printStackTrace();
 				}

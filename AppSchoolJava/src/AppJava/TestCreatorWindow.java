@@ -561,7 +561,7 @@ public class TestCreatorWindow extends JFrame {
 			public void actionPerformed(ActionEvent e) {
 				try {
 					dispose();
-					MainWindow mainWindow = new MainWindow();
+					MainWindow mainWindow = new MainWindow(LoginUI.id_teacher);
 					mainWindow.setVisible(true);
 				} catch (ClassNotFoundException | SQLException e1) {
 					// TODO Auto-generated catch block

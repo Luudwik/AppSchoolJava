@@ -34,7 +34,7 @@ public class LoginUI {
 	private JTextField tx_login;
 	private JPasswordField tx_password;
 	private DbConn dbConn = new DbConn();
-	public int id_teacher;
+	public static int id_teacher;
 	public String firstName;
 	public String surname;
 	
@@ -143,9 +143,10 @@ public class LoginUI {
 
 					if (rs.next()) {
 						Frame_log.dispose();
-						MainWindow mainWindow = new MainWindow(id_teacher);
-						MainWindow mainWindow2 = new MainWindow();
-						mainWindow2.setVisible(true);
+						//MainWindow mainWindow = new MainWindow(id_teacher)
+						//MainWindow mainWindow = new MainWindow(id_teacher);
+						//mainWindow.setVisible(true);
+						
 						
 					} else {
 						JOptionPane.showMessageDialog(null, "Błędne logowanie.");
@@ -170,10 +171,12 @@ public class LoginUI {
 					ResultSet rs = pst.executeQuery();
 
 					if (rs.next()) {
-						id_teacher = rs.getInt("id");
+						id_teacher = rs.getInt("id");						
 						AddGradesWindow addGradesWindow = new AddGradesWindow(id_teacher);
 						AttendanceManagementWindow attendanceManagementWindow = new AttendanceManagementWindow(id_teacher);
+						
 						MainWindow mainWindow = new MainWindow(id_teacher);
+						mainWindow.setVisible(true);
 					} else {
 						JOptionPane.showMessageDialog(null, "Błędne logowanie.");
 					}

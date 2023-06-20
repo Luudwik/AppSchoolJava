@@ -16,6 +16,9 @@ import javax.swing.table.DefaultTableCellRenderer;
 import javax.swing.table.DefaultTableModel;
 import javax.swing.table.JTableHeader;
 import javax.swing.table.TableCellRenderer;
+
+import com.mysql.cj.log.Log;
+
 import javax.swing.JScrollPane;
 import javax.swing.JTable;
 import javax.swing.SwingConstants;
@@ -328,7 +331,7 @@ public class EditStudentsWindow extends JFrame {
 				dispose(); 
 				MainWindow mainWindow; 
 				try { 
-					mainWindow = new MainWindow(); 
+					mainWindow = new MainWindow(LoginUI.id_teacher); 
 					mainWindow.setVisible(true); 
 				} catch (ClassNotFoundException | SQLException e1) { 
 					// TODO Auto-generated catch block 
