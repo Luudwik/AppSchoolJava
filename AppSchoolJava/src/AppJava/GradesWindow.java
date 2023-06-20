@@ -189,7 +189,7 @@ public class GradesWindow extends JFrame {
                 // Wywołaj metodę otwierającą nowe okno
 				MainWindow mainWindow;
 				try {
-					mainWindow = new MainWindow();
+					mainWindow = new MainWindow(LoginUI.id_teacher);
 					mainWindow.setVisible(true);
 				} catch (ClassNotFoundException | SQLException e1) {
 					// TODO Auto-generated catch block

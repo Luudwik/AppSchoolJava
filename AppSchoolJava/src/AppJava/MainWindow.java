@@ -40,13 +40,17 @@ public class MainWindow extends JFrame {
 	private static int teacherId;
 	private String teacherName;
 	
-	public MainWindow(int teacherId) {
+	
+	 public static void setTeacherId(int teacherId) {
 		MainWindow.teacherId = teacherId;
-		System.out.println(teacherId);
 	}
 
+	public int getTeacherId() {
+	        return teacherId;
+	    }
+	 
 	
-	public String find_teacherName()
+	public String find_teacherName(int teacherId)
 	{
 	try {
 		Connection con = dbConn.Connect();
@@ -93,11 +97,15 @@ public class MainWindow extends JFrame {
 	 * @throws SQLException 
 	 * @throws ClassNotFoundException 
 	 */
-	public MainWindow() throws ClassNotFoundException, SQLException {
+	public MainWindow(int teacherId) throws ClassNotFoundException, SQLException {
+		
+		MainWindow.teacherId = teacherId;		
+		
 		setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
 		setResizable(false);
 		setSize(1200,700);
 		setLocationRelativeTo(null);
+		
 		
 		contentPane = new JPanel();
 		contentPane.setBorder(new EmptyBorder(0, 0, 0, 0));
@@ -140,7 +148,8 @@ public class MainWindow extends JFrame {
 		panel_2.setBackground(new Color(224, 255, 255));
 		panel_2.setBorder(BorderFactory.createEmptyBorder(0, 25, 30, 25));
 
-		JLabel lblNewLabel = new JLabel("Witaj " + teacherName);
+		MainWindow.teacherId = teacherId;
+		JLabel lblNewLabel = new JLabel("Witaj " + find_teacherName(teacherId));
 		lblNewLabel.setHorizontalAlignment(SwingConstants.CENTER);
 		lblNewLabel.setFont(new Font("Bodoni MT Condensed", Font.BOLD | Font.ITALIC, (int) (getWidth() * 0.03)));
 		lblNewLabel.setBackground(new Color(224, 255, 255));
@@ -161,8 +170,34 @@ public class MainWindow extends JFrame {
 		rightPanel.add(secondLabel);
 
 		JComboBox<String> comboBox = new JComboBox<>();
-		comboBox.setPreferredSize(new Dimension(150, lblNewLabel.getPreferredSize().height));
+		comboBox.setFont(new Font("Tahoma", Font.PLAIN, 20));
+		comboBox.setPreferredSize(new Dimension(200, lblNewLabel.getPreferredSize().height));
 		// Dodaj elementy do JComboBox
+		
+		try {
+			Connection con = dbConn.Connect();
+
+			// checking the correctness of the login and password
+			PreparedStatement pst = con.prepareStatement(
+					"SELECT name FROM Subjects s INNER JOIN TeacherSubject t ON s.id = t.id_subject WHERE t.id_teacher = ?");
+			pst.setInt(1, teacherId);
+			ResultSet rs = pst.executeQuery();
+
+			while (rs.next()) {
+				String subject = rs.getString("name");						
+				comboBox.addItem(subject);
+			} 
+			
+			rs.close();
+			pst.close();
+		} catch (SQLException ex) {
+			JOptionPane.showMessageDialog(null,
+					"Wystąpił błąd podczas połączenia z bazą danych:\n" + ex.getMessage());
+		} catch (ClassNotFoundException e1) {
+			JOptionPane.showMessageDialog(null, "Nie znaleziono sterownika MySQL:\n" + e1.getMessage());
+		}
+
+		
 		rightPanel.add(comboBox);
 
 		panel_2.add(rightPanel);
@@ -375,11 +410,6 @@ public class MainWindow extends JFrame {
 		buttonCreateTestWithLabelPanel.add(labelCreateTest, constraints);
 
 		panel_1.add(buttonCreateTestWithLabelPanel);
-		
-		
-		//panel_3.add(panel_2);
-		//panel_3.add(panel_1);
-		
 		
 		
 		
