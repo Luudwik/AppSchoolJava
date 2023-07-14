@@ -68,154 +68,168 @@ import javax.swing.JScrollPane;
 import javax.swing.border.CompoundBorder;
 import javax.swing.BoxLayout;
 
+/**
+ * The TestCreatorWindow class represents a GUI window for creating tests.
+ */
 public class TestCreatorWindow extends JFrame {
 
-	private JPanel contentPane;
-	private DbConn dbConn = new DbConn();
-	private JTextField wordPolishQuantityTextField;
-	private JTextField wordEnglishQuantityTextField;
-	private JComboBox<String> categoryBox;
-	private DefaultTableModel tableModelPreviewTest = new DefaultTableModel();
-	private DefaultTableModel tableModelPreviewKeyTest = new DefaultTableModel();
-	private JTable tablePreviewTest;
-	private JTable tablePreviewKeyTest;
-	private JScrollPane scrollPaneTestPreview;
-	private JScrollPane scrollPaneTestKeyPreview;
-	private JPanel contentPaneBodyCenter;
-	private JPanel contentPaneHeader;
-	private JPanel contentPaneBody;
-	private JFileChooser fileChooser;
+    private JPanel contentPane;
+    private DbConn dbConn = new DbConn();
+    private JTextField wordPolishQuantityTextField;
+    private JTextField wordEnglishQuantityTextField;
+    private JComboBox<String> categoryBox;
+    private DefaultTableModel tableModelPreviewTest = new DefaultTableModel();
+    private DefaultTableModel tableModelPreviewKeyTest = new DefaultTableModel();
+    private JTable tablePreviewTest;
+    private JTable tablePreviewKeyTest;
+    private JScrollPane scrollPaneTestPreview;
+    private JScrollPane scrollPaneTestKeyPreview;
+    private JPanel contentPaneBodyCenter;
+    private JPanel contentPaneHeader;
+    private JPanel contentPaneBody;
+    private JFileChooser fileChooser;
 
-	private JLabel lblEmpty;
+    private JLabel lblEmpty;
 
-	/**
-	 * Launch the application.
-	 */
-	public static void main(String[] args) {
-		EventQueue.invokeLater(new Runnable() {
-			public void run() {
-				try {
-					TestCreatorWindow frame = new TestCreatorWindow();
-					frame.setVisible(true);
-					
-				} catch (Exception e) {
-					e.printStackTrace();
-				}
-			}
-		});
-	}
-	
-	public static void setCustomStyle(JComboBox comboBox) {
-	    // Ustawienia kolorów
-	    Color background = new Color(240, 240, 240);
-	    Color foreground = new Color(51, 51, 51);
-	    Color selectionBackground = new Color(102, 102, 102);
-	    Color selectionForeground = Color.WHITE;
+    /**
+     * Launch the application.
+     */
+    public static void main(String[] args) {
+        EventQueue.invokeLater(new Runnable() {
+            public void run() {
+                try {
+                    TestCreatorWindow frame = new TestCreatorWindow();
+                    frame.setVisible(true);
 
-	    // Ustawienia czcionki
-	    Font font = new Font("Arial", Font.PLAIN, 14);
+                } catch (Exception e) {
+                    e.printStackTrace();
+                }
+            }
+        });
+    }
 
-	    // Ustawienia bordera
-	    Border border = BorderFactory.createLineBorder(new Color(210, 210, 210), 1);
+    /**
+     * Sets the custom style for a JComboBox.
+     *
+     * @param comboBox the JComboBox to set the style for
+     */
+    public static void setCustomStyle(JComboBox comboBox) {
+        // Set colors
+        Color background = new Color(240, 240, 240);
+        Color foreground = new Color(51, 51, 51);
+        Color selectionBackground = new Color(102, 102, 102);
+        Color selectionForeground = Color.WHITE;
 
-	    // Ustawienia ComboBoxa
-	    comboBox.setBackground(background);
-	    comboBox.setForeground(foreground);
-	    comboBox.setFont(font);
-	    comboBox.setBorder(border);
+        // Set font
+        Font font = new Font("Arial", Font.PLAIN, 14);
 
-	    // Ustawienia ComboBoxa podczas najścia na niego myszką
-	    comboBox.addMouseListener(new MouseAdapter() {
-	        @Override
-	        public void mouseEntered(MouseEvent e) {
-	            comboBox.setBackground(selectionBackground);
-	            comboBox.setForeground(selectionForeground);
-	        }
+        // Set border
+        Border border = BorderFactory.createLineBorder(new Color(210, 210, 210), 1);
 
-	        @Override
-	        public void mouseExited(MouseEvent e) {
-	            comboBox.setBackground(background);
-	            comboBox.setForeground(foreground);
-	        }
-	    });
+        // Set ComboBox style
+        comboBox.setBackground(background);
+        comboBox.setForeground(foreground);
+        comboBox.setFont(font);
+        comboBox.setBorder(border);
 
-	    
-	}
-	
-	public static void setModernTableStyle(JTable table) {
-	    // Ustawienie czcionki i rozmiaru tekstu w tabeli
-	    table.setFont(new Font("Roboto", Font.PLAIN, 14));
+        // Set ComboBox style on mouse hover
+        comboBox.addMouseListener(new MouseAdapter() {
+            @Override
+            public void mouseEntered(MouseEvent e) {
+                comboBox.setBackground(selectionBackground);
+                comboBox.setForeground(selectionForeground);
+            }
 
-	    // Ustawienie koloru tła tabeli i komórek
-	    table.setBackground(new Color(255, 255, 255));
-	    table.setForeground(new Color(51, 51, 51));
+            @Override
+            public void mouseExited(MouseEvent e) {
+                comboBox.setBackground(background);
+                comboBox.setForeground(foreground);
+            }
+        });
+    }
 
-	    // Ustawienie koloru linii siatki międzykomórkowej
-	    table.setGridColor(new Color(224, 224, 224));
+    /**
+     * Sets the modern style for a JTable.
+     *
+     * @param table the JTable to set the style for
+     */
+    public static void setModernTableStyle(JTable table) {
+        // Set font and text size in the table
+        table.setFont(new Font("Roboto", Font.PLAIN, 14));
 
-	    // Ustawienie koloru nagłówków kolumn
-	    JTableHeader header = table.getTableHeader();
-	    header.setFont(new Font("Roboto", Font.BOLD, 14));
-	    header.setForeground(new Color(255, 255, 255));
-	    header.setBackground(new Color(30, 149, 204));
-	    Dimension headerSize = header.getPreferredSize();
-	    headerSize.height = 40;
-	    header.setPreferredSize(headerSize);
+        // Set background color of the table and cells
+        table.setBackground(new Color(255, 255, 255));
+        table.setForeground(new Color(51, 51, 51));
 
-	    // Ustawienie odstępów między wierszami i wysokości wierszy
-	    table.setRowHeight(30);
-	    table.setIntercellSpacing(new Dimension(0, 0));
+        // Set color of the grid lines
+        table.setGridColor(new Color(224, 224, 224));
 
-	    // Ustawienie marginesów wewnętrznych komórek
-	    TableCellRenderer rendererFromHeader = table.getTableHeader().getDefaultRenderer();
-	    JLabel headerLabel = (JLabel) rendererFromHeader;
-	    headerLabel.setHorizontalAlignment(JLabel.CENTER);
-	    headerLabel.setBorder(BorderFactory.createEmptyBorder(5, 5, 5, 5));
+        // Set color of the column headers
+        JTableHeader header = table.getTableHeader();
+        header.setFont(new Font("Roboto", Font.BOLD, 14));
+        header.setForeground(new Color(255, 255, 255));
+        header.setBackground(new Color(30, 149, 204));
+        Dimension headerSize = header.getPreferredSize();
+        headerSize.height = 40;
+        header.setPreferredSize(headerSize);
 
-	    DefaultTableCellRenderer renderer = new DefaultTableCellRenderer();
-	    renderer.setHorizontalAlignment(JLabel.CENTER);
-	    renderer.setBorder(BorderFactory.createEmptyBorder(5, 5, 5, 5));
-	    table.setDefaultRenderer(Object.class, renderer);
+        // Set row spacing and row height
+        table.setRowHeight(30);
+        table.setIntercellSpacing(new Dimension(0, 0));
 
-	    // Zmiana koloru wiersza po najechaniu myszką
-	    table.addMouseListener(new java.awt.event.MouseAdapter() {
-	        @Override
-	        public void mouseEntered(MouseEvent e) {
-	            int row = table.rowAtPoint(e.getPoint());
-	            if (row >= 0) {
-	                table.setSelectionBackground(new Color(150, 150, 150));
-	                table.repaint();
-	            }
-	        }
+        // Set inner cell margins
+        TableCellRenderer rendererFromHeader = table.getTableHeader().getDefaultRenderer();
+        JLabel headerLabel = (JLabel) rendererFromHeader;
+        headerLabel.setHorizontalAlignment(JLabel.CENTER);
+        headerLabel.setBorder(BorderFactory.createEmptyBorder(5, 5, 5, 5));
 
-	        @Override
-	        public void mouseExited(MouseEvent e) {
-	            table.setSelectionBackground(table.getBackground());
-	            table.repaint();
-	        }
-	    });
-	}
-	
-	public class MyButton extends JButton {
+        DefaultTableCellRenderer renderer = new DefaultTableCellRenderer();
+        renderer.setHorizontalAlignment(JLabel.CENTER);
+        renderer.setBorder(BorderFactory.createEmptyBorder(5, 5, 5, 5));
+        table.setDefaultRenderer(Object.class, renderer);
 
-	    public MyButton(String label) {
-	        super(label);
-	        setOpaque(true);
-	        setForeground(Color.WHITE);
-	        setBackground(new Color(51, 153, 255)); // niebieskie tło
+        // Change row color on mouse hover
+        table.addMouseListener(new java.awt.event.MouseAdapter() {
+            @Override
+            public void mouseEntered(MouseEvent e) {
+                int row = table.rowAtPoint(e.getPoint());
+                if (row >= 0) {
+                    table.setSelectionBackground(new Color(150, 150, 150));
+                    table.repaint();
+                }
+            }
 
-	        // zaokrąglenie rogów
-	        setBorderPainted(false);
-	        setFocusPainted(false);
-	        setMargin(new Insets(10, 20, 10, 20));
-	        setPreferredSize(new Dimension(200, 50));
+            @Override
+            public void mouseExited(MouseEvent e) {
+                table.setSelectionBackground(table.getBackground());
+                table.repaint();
+            }
+        });
+    }
 
-	        // dodanie cienia
-	        setBorder(BorderFactory.createEmptyBorder(5, 15, 5, 15));
-	        setBorder(BorderFactory.createCompoundBorder(getBorder(),
-	                BorderFactory.createEtchedBorder()));
+    /**
+     * Custom button class that extends JButton.
+     */
+    public class MyButton extends JButton {
 
-	        // zmiana czcionki i stylu
+        public MyButton(String label) {
+            super(label);
+            setOpaque(true);
+            setForeground(Color.WHITE);
+            setBackground(new Color(51, 153, 255)); // blue background
+
+            // Rounded corners
+            setBorderPainted(false);
+            setFocusPainted(false);
+            setMargin(new Insets(10, 20, 10, 20));
+            setPreferredSize(new Dimension(200, 50));
+
+            // Add shadow
+            setBorder(BorderFactory.createEmptyBorder(5, 15, 5, 15));
+            setBorder(BorderFactory.createCompoundBorder(getBorder(),
+                    BorderFactory.createEtchedBorder()));
+
+            // Change font and style
 	        setFont(new Font("Arial", Font.BOLD, 16));
 
 	        // zmiana koloru na najazdzie myszy

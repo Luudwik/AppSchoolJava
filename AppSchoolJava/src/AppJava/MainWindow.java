@@ -39,35 +39,48 @@ public class MainWindow extends JFrame {
 	private static DbConn dbConn = new DbConn();
 	private static int teacherId;
 	private String teacherName;
+	public String subject;
+	public String selectedSubject;
 	
-	
-	 public static void setTeacherId(int teacherId) {
+	/**
+	 * Set the teacher ID.
+	 * 
+	 * @param teacherId the teacher ID to set
+	 */
+	public static void setTeacherId(int teacherId) {
 		MainWindow.teacherId = teacherId;
 	}
 
+	/**
+	 * Get the teacher ID.
+	 * 
+	 * @return the teacher ID
+	 */
 	public int getTeacherId() {
-	        return teacherId;
-	    }
-	 
+	    return teacherId;
+	}
 	
-	public String find_teacherName(int teacherId)
-	{
-	try {
-		Connection con = dbConn.Connect();
-		PreparedStatement pst = con.prepareStatement(
-				"SELECT name FROM Teachers WHERE id = ?");
-		pst.setInt(1, teacherId);
-		ResultSet rs = pst.executeQuery();
-		while (rs.next()) {
-			teacherName = rs.getString("name");
+	/**
+	 * Find the teacher name for a given teacher ID.
+	 * 
+	 * @param teacherId the teacher ID
+	 * @return the teacher name
+	 */
+	public String find_teacherName(int teacherId) {
+		try {
+			Connection con = dbConn.Connect();
+			PreparedStatement pst = con.prepareStatement("SELECT name FROM Teachers WHERE id = ?");
+			pst.setInt(1, teacherId);
+			ResultSet rs = pst.executeQuery();
+			while (rs.next()) {
+				teacherName = rs.getString("name");
+			}
+		} catch (SQLException e) {
+			JOptionPane.showMessageDialog(null, "Wystąpił błąd podczas połączenia z bazą danych:\n" + e.getMessage());
+		} catch (ClassNotFoundException e1) {
+			e1.printStackTrace();
 		}
-		
-	} catch (SQLException e) {
-		JOptionPane.showMessageDialog(null, "Wystąpił błąd podczas połączenia z bazą danych:\n" + e.getMessage());
-	} catch (ClassNotFoundException e1) {
-		e1.printStackTrace();
-	}		
-	return teacherName;
+		return teacherName;
 	}
 	
 	/**
@@ -77,12 +90,8 @@ public class MainWindow extends JFrame {
 		EventQueue.invokeLater(new Runnable() {
 			public void run() {
 				try {
-					//MainWindow frame = new MainWindow();
-					//frame.setVisible(true);
 					LoginUI loginUI = new LoginUI();
 					loginUI.Frame_log.setVisible(true);
-					
-					
 				} catch (Exception e) {
 					e.printStackTrace();
 				}
@@ -92,20 +101,18 @@ public class MainWindow extends JFrame {
 
 	/**
 	 * Create the frame.
-	 * @param id_teacher 
-	 * @param id_teacher 
-	 * @throws SQLException 
-	 * @throws ClassNotFoundException 
+	 * 
+	 * @param teacherId the teacher ID
+	 * @throws SQLException
+	 * @throws ClassNotFoundException
 	 */
 	public MainWindow(int teacherId) throws ClassNotFoundException, SQLException {
-		
 		MainWindow.teacherId = teacherId;		
 		
 		setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
 		setResizable(false);
 		setSize(1200,700);
 		setLocationRelativeTo(null);
-		
 		
 		contentPane = new JPanel();
 		contentPane.setBorder(new EmptyBorder(0, 0, 0, 0));
@@ -115,7 +122,6 @@ public class MainWindow extends JFrame {
 		setSize(screenSize.width, screenSize.height);
 		setExtendedState(JFrame.MAXIMIZED_BOTH);
 
-			
 		setContentPane(contentPane);
 		contentPane.setLayout(new BorderLayout(0, 0));
 		
@@ -140,7 +146,6 @@ public class MainWindow extends JFrame {
 		panel.add(lbl_icon_menu_2, BorderLayout.WEST);
 		lbl_icon_menu_2.setIcon(new ImageIcon(scaledImg));
 		lbl_icon_menu_2.setBorder(BorderFactory.createEmptyBorder(30, 30, 30, 30));
-		
 		
 		JPanel panel_2 = new JPanel();
 		panel_2.setLayout((LayoutManager) new BoxLayout(panel_2, BoxLayout.X_AXIS));
@@ -172,8 +177,8 @@ public class MainWindow extends JFrame {
 		JComboBox<String> comboBox = new JComboBox<>();
 		comboBox.setFont(new Font("Tahoma", Font.PLAIN, 20));
 		comboBox.setPreferredSize(new Dimension(200, lblNewLabel.getPreferredSize().height));
-		// Dodaj elementy do JComboBox
 		
+		// Dodaj elementy do JComboBox
 		try {
 			Connection con = dbConn.Connect();
 
@@ -197,9 +202,7 @@ public class MainWindow extends JFrame {
 			JOptionPane.showMessageDialog(null, "Nie znaleziono sterownika MySQL:\n" + e1.getMessage());
 		}
 
-		
 		rightPanel.add(comboBox);
-
 		panel_2.add(rightPanel);
 		
 		JPanel panel_1 = new JPanel();
@@ -210,8 +213,7 @@ public class MainWindow extends JFrame {
 		panel_1.setBorder(BorderFactory.createEmptyBorder(50, 0, 0, 0));
 		
 		JButton btnManageStudents = new JButton();
-		ImageIcon img_student_btn = new ImageIcon(MainWindow.class.getClassLoader().getResource
-				("icon/icon-student_btn.png"));
+		ImageIcon img_student_btn = new ImageIcon(MainWindow.class.getClassLoader().getResource("icon/icon-student_btn.png"));
 		Image img_icon_student_btn = img_student_btn.getImage();
 		Image scaledImg_student_btn = img_icon_student_btn.getScaledInstance(300, 300, Image.SCALE_SMOOTH);
 		ImageIcon scaledIcon_img_student_btn = new ImageIcon(scaledImg_student_btn);
@@ -225,20 +227,17 @@ public class MainWindow extends JFrame {
 					editStudentsWindow = new EditStudentsWindow();
 					editStudentsWindow.setVisible(true);
 				} catch (SQLException e1) {
-					
 					e1.printStackTrace();
 				}
 			}
 		});
 		
 		JButton btnManageAttendance = new JButton();
-		
 		ImageIcon img_attendance_btn = new ImageIcon(MainWindow.class.getClassLoader().getResource("icon/icon-attendance.png"));
 		Image img_icon_attendance_btn = img_attendance_btn.getImage();
 		Image scaledImg_attendance_btn = img_icon_attendance_btn.getScaledInstance(300, 300, Image.SCALE_SMOOTH);
 		ImageIcon scaledIcon_img_attendance_btn = new ImageIcon(scaledImg_attendance_btn);
 		btnManageAttendance.setIcon(scaledIcon_img_attendance_btn);
-		
 		
 		btnManageAttendance.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
@@ -247,19 +246,15 @@ public class MainWindow extends JFrame {
 				try {
 					attendanceManagementWindow = new AttendanceManagementWindow();
 				} catch (ClassNotFoundException e1) {
-					// TODO Auto-generated catch block
 					e1.printStackTrace();
 				} catch (SQLException e1) {
-					// TODO Auto-generated catch block
 					e1.printStackTrace();
 				}
 				attendanceManagementWindow.setVisible(true);			
 			}
 		});
-		//panel_1.add(btnManageAttendance);
 		
 		JButton btnManageGrades = new JButton();
-		
 		ImageIcon img_manage_grades_btn = new ImageIcon(MainWindow.class.getClassLoader().getResource("icon/icon-manageGrades.png"));
 		Image img_icon_manage_grades_btn = img_manage_grades_btn.getImage();
 		Image scaledImg_manage_grades_btn = img_icon_manage_grades_btn.getScaledInstance(300, 300, Image.SCALE_SMOOTH);
@@ -271,12 +266,13 @@ public class MainWindow extends JFrame {
 				dispose();
 				GradesWindow gradesWindow = new GradesWindow();
 				gradesWindow.setVisible(true);
+				selectedSubject = (String) comboBox.getSelectedItem();
+				AddGradesWindow addGradesWindow = new AddGradesWindow(selectedSubject);
+				System.out.println("Wybrany: " + selectedSubject);
 			}
 		});
-		//panel_1.add(btnManageGrades);
 		
 		JButton btnCreateTest = new JButton();
-		
 		ImageIcon img_create_test_btn = new ImageIcon(MainWindow.class.getClassLoader().getResource("icon/icon-createTest.png"));
 		Image img_icon_create_test_btn = img_create_test_btn.getImage();
 		Image scaledImg_create_test_btn = img_icon_create_test_btn.getScaledInstance(300, 300, Image.SCALE_SMOOTH);
@@ -290,7 +286,6 @@ public class MainWindow extends JFrame {
 				dispose();
 			}
 		});
-		//panel_1.add(btnCreateTest);
 		
 		JPanel buttonManageStudentWithLabelPanel = new JPanel();
 		GridBagLayout gridBagLayout = new GridBagLayout();
@@ -298,7 +293,6 @@ public class MainWindow extends JFrame {
 
 		JLabel labelManageStudent = new JLabel("Manage student");
 		labelManageStudent.setFont(new Font("Bodoni MT Condensed", Font.BOLD | Font.ITALIC, (int) (getWidth() * 0.03)));
-
 		labelManageStudent.setHorizontalAlignment(SwingConstants.CENTER);
 		labelManageStudent.setVerticalAlignment(SwingConstants.CENTER);
 
@@ -311,8 +305,6 @@ public class MainWindow extends JFrame {
 		constraints.fill = GridBagConstraints.HORIZONTAL;
 		constraints.anchor = GridBagConstraints.CENTER;
 		constraints.weighty = 1.0;
-
-		//buttonManageStudentWithLabelPanel.add(btnManageStudents, constraints);
 
 		constraints.gridy = 1;
 		constraints.weighty = 0.0;
@@ -328,7 +320,6 @@ public class MainWindow extends JFrame {
 
 		JLabel labelManageAttendance = new JLabel("Attendance");
 		labelManageAttendance.setFont(new Font("Bodoni MT Condensed", Font.BOLD | Font.ITALIC, (int) (getWidth() * 0.03)));
-
 		labelManageAttendance.setHorizontalAlignment(SwingConstants.CENTER);
 		labelManageAttendance.setVerticalAlignment(SwingConstants.CENTER);
 
@@ -341,8 +332,6 @@ public class MainWindow extends JFrame {
 		constraints.fill = GridBagConstraints.HORIZONTAL;
 		constraints.anchor = GridBagConstraints.CENTER;
 		constraints.weighty = 1.0;
-
-		//buttonManageAttendanceWithLabelPanel.add(btnManageAttendance, constraints);
 
 		constraints.gridy = 1;
 		constraints.weighty = 0.0;
@@ -358,7 +347,6 @@ public class MainWindow extends JFrame {
 
 		JLabel labelManageGrades = new JLabel("Manage grades");
 		labelManageGrades.setFont(new Font("Bodoni MT Condensed", Font.BOLD | Font.ITALIC, (int) (getWidth() * 0.03)));
-
 		labelManageGrades.setHorizontalAlignment(SwingConstants.CENTER);
 		labelManageGrades.setVerticalAlignment(SwingConstants.CENTER);
 
@@ -371,8 +359,6 @@ public class MainWindow extends JFrame {
 		constraints.fill = GridBagConstraints.HORIZONTAL;
 		constraints.anchor = GridBagConstraints.CENTER;
 		constraints.weighty = 1.0;
-
-		//buttonManageGradesWithLabelPanel.add(btnManageGrades, constraints);
 
 		constraints.gridy = 1;
 		constraints.weighty = 0.0;
@@ -388,7 +374,6 @@ public class MainWindow extends JFrame {
 
 		JLabel labelCreateTest = new JLabel("Create test");
 		labelCreateTest.setFont(new Font("Bodoni MT Condensed", Font.BOLD | Font.ITALIC, (int) (getWidth() * 0.03)));
-
 		labelCreateTest.setHorizontalAlignment(SwingConstants.CENTER);
 		labelCreateTest.setVerticalAlignment(SwingConstants.CENTER);
 
@@ -402,16 +387,11 @@ public class MainWindow extends JFrame {
 		constraints.anchor = GridBagConstraints.CENTER;
 		constraints.weighty = 1.0;
 
-		//buttonCreateTestWithLabelPanel.add(btnCreateTest, constraints);
-
 		constraints.gridy = 1;
 		constraints.weighty = 0.0;
 
 		buttonCreateTestWithLabelPanel.add(labelCreateTest, constraints);
 
 		panel_1.add(buttonCreateTestWithLabelPanel);
-		
-		
-		
 	}
 }

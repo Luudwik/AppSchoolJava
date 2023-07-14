@@ -28,7 +28,7 @@ import java.awt.Font;
 public class LoginUI {
 
 	/**
-	 *  This object is used in other window (MainWindow)
+	 * This object is used in other window (MainWindow)
 	 */
 	public JFrame Frame_log;
 	private JTextField tx_login;
@@ -37,7 +37,7 @@ public class LoginUI {
 	public static int id_teacher;
 	public String firstName;
 	public String surname;
-	
+
 	/*public LoginUI(int id_teacher)
 	{
 		this.id_teacher = id_teacher;
@@ -59,9 +59,6 @@ public class LoginUI {
 		});
 	}
 
-	
-	
-
 	/**
 	 * Create the application.
 	 */
@@ -72,7 +69,7 @@ public class LoginUI {
 	/**
 	 * Initialize the contents of the frame.
 	 */
-	private void initialize() {		
+	private void initialize() {
 		Frame_log = new JFrame();
 		Frame_log.getContentPane().setSize(new Dimension(60, 60));
 		Frame_log.getContentPane().setBackground(new Color(224, 255, 255));
@@ -122,6 +119,7 @@ public class LoginUI {
 		btn_logIn.addActionListener(new ActionListener() {
 			/**
 			 * Validation login data
+			 * 
 			 * @param e focus on click
 			 */
 			@Override
@@ -143,11 +141,7 @@ public class LoginUI {
 
 					if (rs.next()) {
 						Frame_log.dispose();
-						//MainWindow mainWindow = new MainWindow(id_teacher)
-						//MainWindow mainWindow = new MainWindow(id_teacher);
-						//mainWindow.setVisible(true);
-						
-						
+
 					} else {
 						JOptionPane.showMessageDialog(null, "Błędne logowanie.");
 					}
@@ -159,7 +153,7 @@ public class LoginUI {
 				} catch (ClassNotFoundException e1) {
 					JOptionPane.showMessageDialog(null, "Nie znaleziono sterownika MySQL:\n" + e1.getMessage());
 				}
-				
+
 				try {
 					Connection con = dbConn.Connect();
 
@@ -171,10 +165,10 @@ public class LoginUI {
 					ResultSet rs = pst.executeQuery();
 
 					if (rs.next()) {
-						id_teacher = rs.getInt("id");						
+						id_teacher = rs.getInt("id");
 						AddGradesWindow addGradesWindow = new AddGradesWindow(id_teacher);
 						AttendanceManagementWindow attendanceManagementWindow = new AttendanceManagementWindow(id_teacher);
-						
+
 						MainWindow mainWindow = new MainWindow(id_teacher);
 						mainWindow.setVisible(true);
 					} else {
@@ -199,6 +193,7 @@ public class LoginUI {
 		btn_rej.addActionListener(new ActionListener() {
 			/**
 			 * Open registration window
+			 * 
 			 * @param e focus on click
 			 */
 			public void actionPerformed(ActionEvent e) {
@@ -245,15 +240,14 @@ public class LoginUI {
 		Frame_log.setLocationRelativeTo(null);
 		Frame_log.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
 
-		
 	}
+
 	public int getId_teacher() {
 		return id_teacher;
 	}
+
 	public void setId_teacher(int id_teacher) {
 		this.id_teacher = id_teacher;
 	}
-	
-	
-	
+
 }

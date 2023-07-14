@@ -18,6 +18,10 @@ import java.sql.SQLException;
 import java.awt.event.ActionEvent;
 import java.awt.Color;
 
+/**
+ * The AddStudentWindow class represents a window for adding a new student to the database.
+ * It allows the user to enter the student's name, surname, phone number, and class.
+ */
 public class AddStudentWindow extends JFrame {
 
 	private JPanel contentPane;
@@ -26,6 +30,7 @@ public class AddStudentWindow extends JFrame {
 	private JTextField textFieldPhone;
 	private JTextField textFieldClass;
 	private DbConn dbConn = new DbConn();
+	
 	/**
 	 * Launch the application.
 	 */
@@ -139,7 +144,6 @@ public class AddStudentWindow extends JFrame {
 					
 					
 				} catch (SQLException | ClassNotFoundException e1) {
-					// TODO Auto-generated catch block
 					e1.printStackTrace();
 				}
 				
@@ -162,7 +166,6 @@ public class AddStudentWindow extends JFrame {
 					editStudentsWindow = new EditStudentsWindow();
 					editStudentsWindow.setVisible(true);
 				} catch (SQLException e1) {
-					// TODO Auto-generated catch block
 					e1.printStackTrace();
 				}
 				

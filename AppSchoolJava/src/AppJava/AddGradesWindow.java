@@ -25,6 +25,10 @@ import java.sql.SQLException;
 import java.sql.Statement;
 import java.awt.event.ActionEvent;
 
+/**
+ * The AddGradesWindow class represents a window for adding grades to students.
+ * It allows the teacher to enter the mark and type of the grade and save it.
+ */
 public class AddGradesWindow extends JFrame {
 
 	private JPanel jpanel_AddGradesWindow;
@@ -39,10 +43,13 @@ public class AddGradesWindow extends JFrame {
 	private int id_subject, id_student;
 	private int id_type;
 
+	public int nrid;
+	
 	
 	private LoginUI loginUI = new LoginUI();
 	
 	int idTeacher;
+	private String selectedSubject;
 
 	/**
 	 * Launch the application.
@@ -59,29 +66,41 @@ public class AddGradesWindow extends JFrame {
 			}
 		});
 	}
+	
+	/**
+	 * Constructs an AddGradesWindow object with the specified selected subject.
+	 * 
+	 * @param selectedSubject the selected subject for which the grades are being added
+	 */
+	 public AddGradesWindow(String selectedSubject) {
+		 this.selectedSubject = selectedSubject;
+	    }
 
 	/**
-	 * Create the frame.
+	 * Constructs an AddGradesWindow object with the specified teacher ID.
+	 * 
+	 * @param id_teacher the ID of the teacher
 	 */
-	
 	public AddGradesWindow(int id_teacher) {
 		this.id_teacher = id_teacher;
-		//System.out.println(id_teacher);
 	}
 	
+	/**
+	 * Constructs an AddGradesWindow object with the specified first name and surname.
+	 * 
+	 * @param firstName the first name of the teacher
+	 * @param surname the surname of the teacher
+	 */
 	public AddGradesWindow(String firstName, String surname )
 	{
 		AddGradesWindow.firstName = firstName;
 		AddGradesWindow.surname = surname;
-		//System.out.println(AddGradesWindow.firstName);
-		//System.out.println(AddGradesWindow.surname);
 	}
 	
-	
-	
+	/**
+	 * Constructs an AddGradesWindow object.
+	 */
 	public AddGradesWindow() {
-		
-		//System.out.println(id_teacher);
 		this.idTeacher = id_teacher;
 		
 		setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
@@ -164,35 +183,31 @@ public class AddGradesWindow extends JFrame {
 			ResultSet rs = pst.executeQuery();
 			while (rs.next()) {
 				id_subject = rs.getInt("id_subject");
-				//System.out.println("id_subject: " + id_subject);
 			}
 			
-			} catch (SQLException ex) {
-				JOptionPane.showMessageDialog(null,
-						"Wystąpił błąd podczas połączenia z bazą danych:\n" + ex.getMessage());
-			} catch (ClassNotFoundException e1) {
-				e1.printStackTrace();
-			}
+		} catch (SQLException ex) {
+			JOptionPane.showMessageDialog(null,
+				"Wystąpił błąd podczas połączenia z bazą danych:\n" + ex.getMessage());
+		} catch (ClassNotFoundException e1) {
+			e1.printStackTrace();
+		}
 		
 		try {
 			Connection con = dbConn.Connect();
 			PreparedStatement pst = con.prepareStatement("SELECT id FROM Students WHERE name = ? AND surname = ?");
 			pst.setString(1, AddGradesWindow.firstName); 
-			System.out.println("fn: " +AddGradesWindow.firstName);
-			System.out.println("sn: " + AddGradesWindow.surname);
 			pst.setString(2, AddGradesWindow.surname); 
 			ResultSet rs = pst.executeQuery();
 			while (rs.next()) {
 				id_student = rs.getInt("id");
-				System.out.println("id_student: " + id_student);
 			}
 			
-			} catch (SQLException ex) {
-				JOptionPane.showMessageDialog(null,
-						"Wystąpił błąd podczas połączenia z bazą danych:\n" + ex.getMessage());
-			} catch (ClassNotFoundException e1) {
-				e1.printStackTrace();
-			}
+		} catch (SQLException ex) {
+			JOptionPane.showMessageDialog(null,
+				"Wystąpił błąd podczas połączenia z bazą danych:\n" + ex.getMessage());
+		} catch (ClassNotFoundException e1) {
+			e1.printStackTrace();
+		}
 		
 		
 		JPanel panel_2 = new JPanel();
@@ -230,8 +245,6 @@ public class AddGradesWindow extends JFrame {
 				    ResultSet rs = pst.executeQuery(); 
 				    if (rs.next()) {
 				    	id_type = rs.getInt("id"); 
-				    	//System.out.println("ID_TYPE: " + id_type);
-				        
 				    }
 				    
 				} catch (SQLException ex) {
@@ -253,17 +266,11 @@ public class AddGradesWindow extends JFrame {
 		
 		
 					pst.setInt(1, AddGradesWindow.id_teacher); 
-					//System.out.println(AddGradesWindow.id_teacher);
 					pst.setInt(2, id_student);
-					System.out.println("idstd: " +id_student);
 					pst.setInt(3, id_subject);
-					//System.out.println(id_subject);
 					pst.setInt(4, Integer.parseInt(tx_mark.getText()));
-					//System.out.println(Integer.parseInt(tx_mark.getText()));
 					pst.setInt(5, id_type);
-					//System.out.println(id_student);
 					pst.setInt(6, AddGradesWindow.id_teacher);
-					//System.out.println(AddGradesWindow.id_teacher);
 					pst.executeUpdate();
 					
 				} catch (SQLException ex) {
@@ -280,6 +287,8 @@ public class AddGradesWindow extends JFrame {
 		panel_2.add(btn_Save);
 		
 		//System.out.println("TojesttO: "+AddGradesWindow.id_teacher);
+		
+		System.out.println("W klasie AddGradesWin: " + selectedSubject);
 		
 	}
 	

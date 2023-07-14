@@ -1,8 +1,15 @@
 package AppJava;
 
+import java.awt.BorderLayout;
+import java.awt.Color;
+import java.awt.Component;
 import java.awt.Dimension;
 import java.awt.EventQueue;
+import java.awt.Font;
+import java.awt.Image;
 import java.awt.Toolkit;
+import java.awt.event.ActionEvent;
+import java.awt.event.ActionListener;
 import java.awt.event.ComponentAdapter;
 import java.awt.event.ComponentEvent;
 import java.awt.event.WindowAdapter;
@@ -11,33 +18,24 @@ import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
-import javax.swing.JFrame;
-import javax.swing.JPanel;
-import javax.swing.JScrollPane;
-import javax.swing.border.EmptyBorder;
-import javax.swing.table.DefaultTableCellRenderer;
-import javax.swing.table.DefaultTableModel;
+
 import javax.swing.BorderFactory;
 import javax.swing.Box;
 import javax.swing.BoxLayout;
 import javax.swing.ImageIcon;
 import javax.swing.JButton;
-
-import java.awt.BorderLayout;
-import java.awt.Color;
-import java.awt.Component;
-
-import javax.swing.SwingConstants;
+import javax.swing.JComboBox;
+import javax.swing.JFrame;
 import javax.swing.JLabel;
 import javax.swing.JOptionPane;
-
-import java.awt.Font;
-import java.awt.Image;
+import javax.swing.JPanel;
+import javax.swing.JScrollPane;
 import javax.swing.JTable;
-import javax.swing.JComboBox;
-import java.awt.event.ActionListener;
-import java.awt.event.ActionEvent;
 import javax.swing.ListSelectionModel;
+import javax.swing.SwingConstants;
+import javax.swing.border.EmptyBorder;
+import javax.swing.table.DefaultTableCellRenderer;
+import javax.swing.table.DefaultTableModel;
 
 @SuppressWarnings("serial")
 public class GradesWindow extends JFrame {
@@ -54,7 +52,7 @@ public class GradesWindow extends JFrame {
 	public static String surname;
 	public int choosedIDInt;
 	public int id_teacher;
-	
+	private DefaultTableModel tableModel = new DefaultTableModel();
 
 	public GradesWindow(String choosedMarkTxt, String choosedTypeTxt, String firstName, String surname) {
 		this.choosedMarkTxt = choosedMarkTxt;
@@ -62,20 +60,12 @@ public class GradesWindow extends JFrame {
 		this.firstName = firstName;
 		this.surname = surname;		
 	}
-	public GradesWindow(String firstName, String surname)
-	{
+
+	public GradesWindow(String firstName, String surname) {
 		this.firstName = firstName;
 		this.surname = surname;
 	}
-	
-	
 
-	static // DefaultTableModel model;
-	DefaultTableModel tableModel = new DefaultTableModel();
-
-	/**
-	 * Launch the application.
-	 */
 	public static void main(String[] args) {
 		EventQueue.invokeLater(new Runnable() {
 			public void run() {
@@ -85,7 +75,6 @@ public class GradesWindow extends JFrame {
 				} catch (Exception e) {
 					e.printStackTrace();
 				}
-
 			}
 		});
 	}
@@ -107,7 +96,7 @@ public class GradesWindow extends JFrame {
 			});
 
 		} catch (SQLException e) {
-			JOptionPane.showMessageDialog(null, "Wystąpił błąd podczas połączenia z bazą danych:\n" + e.getMessage());
+			JOptionPane.showMessageDialog(null, "An error occurred while connecting to the database:\n" + e.getMessage());
 		} catch (ClassNotFoundException e1) {
 			e1.printStackTrace();
 		}
@@ -126,11 +115,9 @@ public class GradesWindow extends JFrame {
 				firstName = rs.getString("name");
 				surname = rs.getString("surname");
 				cb_student.addItem(firstName + " " + surname);
-				//AddGradesWindow addGradesWindow = new AddGradesWindow(firstName, surname);
 			}
-			
 		} catch (SQLException e) {
-			JOptionPane.showMessageDialog(null, "Wystąpił błąd podczas połączenia z bazą danych:\n" + e.getMessage());
+			JOptionPane.showMessageDialog(null, "An error occurred while connecting to the database:\n" + e.getMessage());
 		} catch (ClassNotFoundException e1) {
 			e1.printStackTrace();
 		}		
@@ -140,19 +127,15 @@ public class GradesWindow extends JFrame {
 		chooseClass = (String) cb_class.getSelectedItem();
 		return chooseClass;
 	}
-
-
 	
 	public static void refreshTable() {
 		try {
+			DefaultTableModel tableModel = (DefaultTableModel) table_student.getModel();
 			tableModel.setRowCount(0);
 			String selectedStudent = cb_student.getSelectedItem().toString();
 			String[] nameParts = selectedStudent.split(" ");
 			firstName = nameParts[0];
 			surname = nameParts[1];
-			System.out.println(firstName);
-			System.out.println(surname);
-			AddGradesWindow addGradesWindow = new AddGradesWindow(firstName, surname);
 			Connection con = dbConn.Connect();
 			PreparedStatement pst = con.prepareStatement(
 					"SELECT Grades.id, Grades.mark, GradeType.type FROM Students JOIN Grades ON Students.id = Grades.id_student JOIN GradeType ON Grades.id_grade_type = GradeType.id WHERE Students.name = ? AND Students.surname = ?");
@@ -166,47 +149,32 @@ public class GradesWindow extends JFrame {
 				String type = rs.getString("type");
 				tableModel.addRow(new Object[] { id, mark, type });
 			}
-
 		} catch (SQLException ex) {
-			JOptionPane.showMessageDialog(null, "Wystąpił błąd podczas połączenia z bazą danych:\n" + ex.getMessage());
+			JOptionPane.showMessageDialog(null, "An error occurred while connecting to the database:\n" + ex.getMessage());
 		} catch (ClassNotFoundException e1) {
 			e1.printStackTrace();
 		}
 	}
-	
-
-	/**
-	 * Create the frame.
-	 */
 
 	public GradesWindow() {
-		//setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
 		setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
-		// Dodaj nasłuchiwacz zdarzeń do przycisku zamknięcia
 		addWindowListener(new WindowAdapter() {
 			@Override
-            public void windowClosing(WindowEvent e) {
-                // Wywołaj metodę otwierającą nowe okno
-				MainWindow mainWindow;
+			public void windowClosing(WindowEvent e) {
 				try {
-					mainWindow = new MainWindow(LoginUI.id_teacher);
+					MainWindow mainWindow = new MainWindow(LoginUI.id_teacher);
 					mainWindow.setVisible(true);
 				} catch (ClassNotFoundException | SQLException e1) {
-					// TODO Auto-generated catch block
 					e1.printStackTrace();
 				}
-				
 			}
 		});
-		
+
 		GradesWindow = new JPanel();
 		setLocationRelativeTo(null);
 
-		// Pobranie rozmiaru ekranu
 		Dimension screenSize = Toolkit.getDefaultToolkit().getScreenSize();
-		// Ustawienie rozmiaru okna na rozmiar ekranu
 		setSize(screenSize.width, screenSize.height);
-		// Ustawienie zachowania okna na pełny ekran
 		setExtendedState(JFrame.MAXIMIZED_BOTH);
 
 		GradesWindow.setBorder(new EmptyBorder(0, 0, 0, 0));
@@ -278,8 +246,6 @@ public class GradesWindow extends JFrame {
 		cb_student.setBorder(BorderFactory.createEmptyBorder(5, 5, 5, 5));
 		panel_3.add(cb_student, BorderLayout.NORTH);
 
-		
-		
 		Component hs_5 = Box.createHorizontalStrut((panel_3.getWidth() / 3) + 30);
 		panel_3.add(hs_5);
 
@@ -287,33 +253,6 @@ public class GradesWindow extends JFrame {
 		btn_accept.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
 				refreshTable();
-				/*try {
-					tableModel.setRowCount(0);
-					String selectedStudent = cb_student.getSelectedItem().toString();
-					String[] nameParts = selectedStudent.split(" ");
-					firstName = nameParts[0];
-					surname = nameParts[1];
-					System.out.println(firstName);
-					System.out.println(surname);
-					Connection con = dbConn.Connect();
-					PreparedStatement pst = con.prepareStatement(
-							"SELECT Grades.id, Grades.mark, GradeType.type FROM Students JOIN Grades ON Students.id = Grades.id_student JOIN GradeType ON Grades.id_grade_type = GradeType.id WHERE Students.name = ? AND Students.surname = ?");
-					pst.setString(1, firstName);
-					pst.setString(2, surname);
-					ResultSet rs = pst.executeQuery();
-
-					while (rs.next()) {
-						int id = rs.getInt("id");
-						int mark = rs.getInt("mark");
-						String type = rs.getString("type");
-						tableModel.addRow(new Object[] { id, mark, type });
-					}
-
-				} catch (SQLException ex) {
-					JOptionPane.showMessageDialog(null, "Wystąpił błąd podczas połączenia z bazą danych:\n" + ex.getMessage());
-				} catch (ClassNotFoundException e1) {
-					e1.printStackTrace();
-				}*/
 			}
 		});
 		btn_accept.setFont(new Font("Bodoni MT Condensed", Font.BOLD | Font.ITALIC, (int) (getWidth() * 0.03)));
@@ -352,7 +291,6 @@ public class GradesWindow extends JFrame {
 		table_student.getTableHeader().setFont(new Font("Bodoni MT Condensed", Font.BOLD | Font.ITALIC, 30));
 		table_student.setRowHeight(40);
 
-		// wysrodkowanie
 		DefaultTableCellRenderer centerRenderer = new DefaultTableCellRenderer();
 		centerRenderer.setHorizontalAlignment(JLabel.CENTER);
 		for (int i = 0; i < table_student.getColumnCount(); i++) {
@@ -422,20 +360,20 @@ public class GradesWindow extends JFrame {
 						choosedTypeTxt = choosedType.toString();
 						choosedIDInt = Integer.parseInt(choosedIDTxt);
 					}
-				Connection con = dbConn.Connect();
-				PreparedStatement pst = con.prepareStatement(
-						"DELETE FROM Grades, GradeType "
-						+ "USING Grades "
-						+ "JOIN GradeType ON Grades.id_grade_type = GradeType.id "
-						+ "WHERE Grades.id = ?");
-				pst.setInt(1, choosedIDInt);
-				boolean rs = pst.execute();
+					Connection con = dbConn.Connect();
+					PreparedStatement pst = con.prepareStatement(
+							"DELETE FROM Grades, GradeType "
+							+ "USING Grades "
+							+ "JOIN GradeType ON Grades.id_grade_type = GradeType.id "
+							+ "WHERE Grades.id = ?");
+					pst.setInt(1, choosedIDInt);
+					boolean rs = pst.execute();
 
-			} catch (SQLException ex) {
-				JOptionPane.showMessageDialog(null, "Wystąpił błąd podczas połączenia z bazą danych:\n" + ex.getMessage());
-			} catch (ClassNotFoundException e1) {
-				e1.printStackTrace();
-			}
+				} catch (SQLException ex) {
+					JOptionPane.showMessageDialog(null, "An error occurred while connecting to the database:\n" + ex.getMessage());
+				} catch (ClassNotFoundException e1) {
+					e1.printStackTrace();
+				}
 				refreshTable();
 			}
 		});
@@ -447,27 +385,28 @@ public class GradesWindow extends JFrame {
 		fillCb_class();
 		fillCb_Students();
 		table_student.repaint();
-		
-		
-		
-
 	}
 	
 	public int getChoosedIDInt() {
 		return choosedIDInt;
 	}
+	
 	public void setChoosedIDInt(int choosedIDInt) {
 		this.choosedIDInt = choosedIDInt;
 	}
+	
 	public String getFirstName() {
 		return firstName;
 	}
+	
 	public void setFirstName(String firstName) {
 		this.firstName = firstName;
 	}
+	
 	public String getSurname() {
 		return surname;
 	}
+	
 	public void setSurname(String surname) {
 		this.surname = surname;
 	}
